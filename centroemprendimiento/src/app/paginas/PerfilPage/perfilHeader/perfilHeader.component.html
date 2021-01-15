@@ -1,0 +1,35 @@
+<div  class="user-profile user-card mb-4" *ngIf="persona">
+  <div class="card-header border-0 p-0 pb-0">
+    <div  class="cover-img-block">
+      <div class="overlay"></div>
+      <div class="change-cover">
+        <div class="dropdown" ngbDropdown placement="bottom-left">
+          <a class="drp-icon dropdown-toggle" ngbDropdownToggle data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false"><i class="icon feather icon-camera"></i></a>
+          <div class="dropdown-menu" ngbDropdownMenu>
+            <a class="dropdown-item" href="javascript:"><i class="feather icon-upload-cloud mr-2"></i>upload new</a>
+            <a class="dropdown-item" href="javascript:"><i class="feather icon-image mr-2"></i>from photos</a>
+            <a class="dropdown-item" href="javascript:"><i class="feather icon-film mr-2"></i> upload video</a>
+            <a class="dropdown-item" href="javascript:"><i class="feather icon-trash-2 mr-2"></i>remove</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div  class="card-body py-0">
+    <div class="user-about-block m-0">
+      <div class="row">
+        <div class="col-md-4 text-center mt-n5">
+          <app-fotoPerfil></app-fotoPerfil>
+          <h5  id ="paso1" class="mb-1" [innerText]="usuario.getName()"></h5>
+          <p class="mb-2 text-muted" [innerText]="persona.frase_perfil ? persona.frase_perfil : 'Preséntate en 100 caracteres'"></p>
+          <app-redes_sociales [redes_sociales]="persona.redes_sociales"></app-redes_sociales>
+        </div>
+        <div class="col-md-8 mt-md-4">
+          <ng-content select=".app-seccion-perfil"></ng-content>
+          <ng-content select=".app-option-perfil"></ng-content>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

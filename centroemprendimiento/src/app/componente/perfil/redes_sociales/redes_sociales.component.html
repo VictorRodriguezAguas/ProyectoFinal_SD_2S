@@ -1,0 +1,11 @@
+<ul class="list-inline f-20 mt-3 mb-0">
+  <li class="list-inline-item" *ngFor="let red of redes_sociales">
+    <a (click)="redSocial(red.red)" target="_blank" 
+      [attr.class]="'text-' + red.nombre.toLowerCase()"
+      [ngClass]="{'text-muted': !red.red}"
+      [placement]="'top'" 
+      [ngbTooltip]="red.red ? red.red : 'No tiene ' + red.nombre">
+      <i [class]="'fab ' + red.icono"></i>
+    </a>
+  </li>
+</ul>

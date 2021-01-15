@@ -1,0 +1,340 @@
+<!--div *ngIf="this.agendaSeleccionada && this.emprendedor">
+  <div class="q-view" [ngClass]="this.showView ? 'active' : ''">
+    <div class="overlay" (click)="_cancelar()"></div>
+    <div class="content">
+      <div class="card-body">
+        <h4>{{'Reunion ' + this.agendaSeleccionada.tipo_agenda}}</h4>
+        <div class="border-bottom pb-3 pt-3">
+          <div class="row">
+            <div class="col-md-12 text-right">
+              <p class="d-inline-block mb-0"><i class="feather icon-calendar mr-1"></i><label
+                  class="mb-0">{{this.agendaSeleccionada.fecha_agenda + ' ' + this.agendaSeleccionada.hora_inicio_agenda}}</label>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <app-reunionDatos [archivo]="(archivos && archivos.length > 0) ? archivos[0]: null" [emprendedor]="emprendedor"></app-reunionDatos>
+
+      <div class="card-body">
+        <h4>{{'FORMULARIO DE ' + this.agendaSeleccionada.tipo_agenda}}</h4>
+        <div class="border-bottom pb-3 pt-3">
+          <div class="row">
+            <div class="col-md-12">
+              <button *ngIf="this.showIR && editable" (click)="iniciarReunion()"
+                class="btn btn-success btn-sm btn-round has-ripple">
+                <i class="fa fa-calendar-plus-o"></i>Iniciar reunion
+              </button>
+              <p class="d-inline-block mb-0 derecha">
+                <i class="feather icon-calendar mr-1"></i>
+                <label
+                  class="mb-0">{{this.agendaSeleccionada.fecha_agenda + ' ' + this.agendaSeleccionada.hora_inicio_agenda}}</label>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <app-card *ngIf="this.showFR" [options]="false" [hidHeader]="true" cardClass="user-card user-card-3 support-bar1"
+        [isCardFooter]="false">
+        <div class="row">
+          <div class="col-sm-12">
+            <app-card [options]="false" [hidHeader]="true">
+              <div class="input-group mb-3" *ngIf="this.reunion.estado != 'AP'">
+                <app-archivo placeholder="Subir imagen" (file)="setImagen1($event)" classIcon="feather icon-image"
+                  [accept]="nemonicoFile.mimetype" [maxSize]="nemonicoFile.size_max * 1024 * 1024"
+                  [title]="'En caso de que la reunión se realice de manera virtual, por favor, adjunte una imagen que muestre la hora de inicio:'">
+                </app-archivo>
+              </div>
+              <div class="input-group mb-3" *ngIf="reunion.url_imagen_inicio">
+                <a [href]="reunion.url_imagen_inicio" target="_blank">
+                  <i class="feather icon-download-cloud"></i> <strong> Imagen de inicio de reunión</strong>
+                </a>
+              </div>
+            </app-card>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group">
+              <app-listToDo [titulo]="titleExpectativas" (getLista)="expectativas($event)"
+                [editable]="this.reunion.estado != 'AP'" [lista]="temas ? temas.split('|') : []"
+                placeholder="Ingrese una expectativa"></app-listToDo>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group fill">
+              <app-listToDo [titulo]="titleCompromisos" (getLista)="compromisos($event)"
+                [editable]="this.reunion.estado != 'AP'" [lista]="acuerdos ? acuerdos.split('|') : []"
+                placeholder="Ingrese un compromiso"></app-listToDo>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group fill">
+              <app-listToDo [titulo]="titleObservaciones" (getLista)="observaciones($event)"
+                [editable]="this.reunion.estado != 'AP'" [lista]="observacion ? observacion.split('|') : []"
+                placeholder="Ingrese una observacion">
+              </app-listToDo>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group fill">
+              <app-formulario [id_formulario]="codFormulario" [id_registro]="this.reunion.id_registro_formulario"
+                (getFormulario)="setFormulario($event)" clasColum="col-sm-12" [submit]="submit"
+                [editable]="this.reunion.estado != 'AP' "></app-formulario>
+            </div>
+          </div>
+
+<div class="col-sm-12" *ngIf="reunion.actividades_asignadas && reunion.actividades_asignadas.length > 0">
+  <div class="form-group fill">
+    <app-card cardTitle="Actividades asignadas" blockClass="p-0 scrollabel-body" [options]="false">
+      <div class="mt-3 mb-3">
+        <div *ngFor="let item of reunion.actividades_asignadas">
+          <span class="px-4 d-block">
+            <i class="fas fa-circle text-c-blue f-10 m-r-5"></i>{{item.actividad}}
+          </span>
+          <hr>
+        </div>
+      </div>
+    </app-card>
+  </div>
+</div>
+
+<div class="col-sm-12" *ngIf="reunion.mentorias_asignadas && reunion.mentorias_asignadas.length > 0">
+  <div class="form-group fill">
+    <app-card cardTitle="Mentorias asignadas" blockClass="p-0 scrollabel-body" [options]="false">
+      <div class="mt-3 mb-3">
+        <div *ngFor="let item of reunion.mentorias_asignadas">
+          <span class="px-4 d-block">
+            {{item.tematica}}
+            <span class="text-muted float-right f-14">Sesiones: {{item.sesiones}}</span>
+          </span>
+          <hr>
+        </div>
+      </div>
+    </app-card>
+  </div>
+</div>
+
+<div class="col-sm-12" *ngIf="this.reunion.estado != 'AP'">
+  <app-card [options]="false" [hidHeader]="true">
+    <div class="btn-group" role="group" aria-label="button groups">
+      <button class="btn btn-info btn-sm" (click)="asignarActividades()"
+        *ngIf="!hideAsignarActividad && !(reunion.actividades_asignadas && reunion.actividades_asignadas.length > 0)">Asignar
+        actividad</button>
+      <button class="btn btn-warning btn-sm" (click)="calificarEmprendimiento()"
+        *ngIf="!hideCalificar && !(reunion.mentorias_asignadas && reunion.mentorias_asignadas.length > 0)">Calificar
+        emprendimiento</button>
+    </div>
+  </app-card>
+</div>
+<div class="col-sm-12">
+  <app-card [options]="false" [hidHeader]="true">
+    <div class="input-group mb-3" *ngIf="this.reunion.estado != 'AP'">
+      <app-archivo placeholder="Subir imagen" (file)="setImagen2($event)" classIcon="feather icon-image"
+        [accept]="nemonicoFile.mimetype" [maxSize]="nemonicoFile.size_max * 1024 * 1024"
+        title="En caso de que la reunión fue realizada de manera virtual, por favor, adjunte una imagen que muestre la hora de fin.">
+      </app-archivo>
+    </div>
+    <div class="input-group mb-3" *ngIf="reunion.url_imagen_fin">
+      <a [href]="reunion.url_imagen_fin" target="_blank">
+        <i class="feather icon-download-cloud"></i> <strong> Imagen de fin de reunión</strong>
+      </a>
+    </div>
+  </app-card>
+</div>
+
+<div class="col-sm-12" *ngIf="this.reunion.estado != 'AP' && editable">
+  <div class="form-group fill text-right">
+    <button (click)="finalizarReunion();" class="btn btn-success btn-sm btn-round has-ripple"><i
+        class="fa fa-calendar-check-o"></i>Finalizar reunion</button>
+  </div>
+</div>
+</div>
+
+</app-card>
+</div>
+</div>
+</div-->
+
+<div class="row btn-page">
+  <div class="col-sm-12">
+    <app-card hidHeader="true" cardClass="task-board-left" [options]="false">
+      <h4>{{'REUNIÓN DE ' + this.agendaSeleccionada.tipo_agenda}}</h4>
+    </app-card>
+  </div>
+
+  <div [ngClass]="{'col-xl-5 col-lg-5 col-md-4 col-sm-12': vista == 2,
+                   'col-sm-12': vista==1}" *ngIf="!hideDatosEmprendedor">
+    <div *ngIf="emprendedor">
+      <app-reunionDatos [archivo]="(archivos && archivos.length > 0) ? archivos[0]: null" [emprendedor]="emprendedor"
+        [vista]="vista">
+      </app-reunionDatos>
+    </div>
+  </div>
+
+  <div [ngClass]="{'col-xl-7 col-lg-7 col-md-8 col-sm-12': vista == 2,
+                'col-sm-12': vista==1}">
+    <app-card customHeader="true" cardClass="task-board-left" [options]="false">
+      <div class="app-card-header">
+        <div class="row">
+          <div class="col-md-12">
+            <!--*ngIf="this.showIR && editable"-->
+            <h5>{{'FORMULARIO DE ' + this.agendaSeleccionada.tipo_agenda}}</h5>
+            <p class="d-inline-block mb-0 derecha">
+              <i class="feather icon-calendar mr-1"></i>
+              <label
+                class="mb-0">{{this.agendaSeleccionada.fecha_agenda + ' ' + this.agendaSeleccionada.hora_inicio_agenda}}</label>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="this.showIR && editable">
+        <div class="col-sm-12">
+          <button (click)="iniciarReunion()" class="btn btn-success btn-sm btn-round has-ripple">
+            <i class="fa fa-calendar-plus-o"></i>Iniciar reunion
+          </button>
+        </div>
+      </div>
+      <div class="row" *ngIf="this.showFR">
+        <div class="col-sm-12">
+          <app-card [options]="false" [hidHeader]="true">
+            <div class="input-group mb-3" *ngIf="this.reunion.estado != 'AP' && editable">
+              <app-archivo placeholder="Subir imagen" (file)="setImagen1($event)" classIcon="feather icon-image"
+                [accept]="nemonicoFile.mimetype" [maxSize]="nemonicoFile.size_max * 1024 * 1024"
+                [title]="'En caso de que la reunión se realice de manera virtual, por favor, adjunte una imagen que muestre la hora de inicio:'">
+              </app-archivo>
+            </div>
+            <div class="input-group mb-3" *ngIf="reunion.url_imagen_inicio">
+              <a [href]="reunion.url_imagen_inicio" target="_blank">
+                <i class="feather icon-download-cloud"></i> <strong> Imagen de inicio de reunión</strong>
+              </a>
+            </div>
+          </app-card>
+        </div>
+        <div class="col-sm-12">
+          <div class="form-group">
+            <app-listToDo [titulo]="titleExpectativas" (getLista)="expectativas($event)"
+              [editable]="this.reunion.estado != 'AP' && editable" [lista]="temas ? temas.split('|') : []"
+              placeholder="Ingrese una expectativa"></app-listToDo>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <div class="form-group fill">
+            <app-listToDo [titulo]="titleCompromisos" (getLista)="compromisos($event)"
+              [editable]="this.reunion.estado != 'AP' && editable" [lista]="acuerdos ? acuerdos.split('|') : []"
+              placeholder="Ingrese un compromiso"></app-listToDo>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <div class="form-group fill">
+            <app-listToDo [titulo]="titleObservaciones" (getLista)="observaciones($event)"
+              [editable]="this.reunion.estado != 'AP' && editable" [lista]="observacion ? observacion.split('|') : []"
+              placeholder="Ingrese una observacion">
+            </app-listToDo>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <div class="form-group fill">
+            <app-formulario [id_formulario]="codFormulario" [id_registro]="this.reunion.id_registro_formulario"
+              (getFormulario)="setFormulario($event)" clasColum="col-sm-12" [submit]="submit"
+              [editable]="this.reunion.estado != 'AP' && editable"></app-formulario>
+          </div>
+        </div>
+
+        <!-- Actvidades asigandas -->
+        <div class="col-sm-12" *ngIf="reunion.actividades_asignadas && reunion.actividades_asignadas.length > 0">
+          <div class="form-group fill">
+            <app-card cardTitle="Actividades asignadas" blockClass="p-0 scrollabel-body" [options]="false">
+              <div class="mt-3 mb-3">
+                <div *ngFor="let item of reunion.actividades_asignadas">
+                  <span class="px-4 d-block">
+                    <i class="fas fa-circle text-c-blue f-10 m-r-5"></i>{{item.actividad}}
+                  </span>
+                  <hr>
+                </div>
+              </div>
+            </app-card>
+          </div>
+        </div>
+
+        <!-- Mentorias asigandas -->
+        <div class="col-sm-12" *ngIf="reunion.mentorias_asignadas && reunion.mentorias_asignadas.length > 0">
+          <div class="form-group fill">
+            <app-card cardTitle="Mentorias asignadas" blockClass="p-0 scrollabel-body" [options]="false">
+              <div class="mt-3 mb-3">
+                <div *ngFor="let item of reunion.mentorias_asignadas">
+                  <span class="px-4 d-block">
+                    {{item.tematica}}
+                    <span class="text-muted float-right f-14">Sesiones: {{item.sesiones}}</span>
+                  </span>
+                  <hr>
+                </div>
+              </div>
+            </app-card>
+          </div>
+        </div>
+
+        <div class="col-sm-12" *ngIf="this.reunion.estado != 'AP' && editable">
+          <app-card [options]="false" [hidHeader]="true">
+            <div class="btn-group" role="group" aria-label="button groups">
+              <button class="btn btn-info btn-sm" (click)="asignarActividades()"
+                *ngIf="!hideAsignarActividad && !(reunion.actividades_asignadas && reunion.actividades_asignadas.length > 0)">Asignar
+                actividad</button>
+              <button class="btn btn-warning btn-sm" (click)="calificarEmprendimiento()"
+                *ngIf="!hideCalificar && !(reunion.mentorias_asignadas && reunion.mentorias_asignadas.length > 0)">Calificar
+                emprendimiento</button>
+            </div>
+          </app-card>
+        </div>
+        <div class="col-sm-12">
+          <app-card [options]="false" [hidHeader]="true">
+            <div class="input-group mb-3" *ngIf="this.reunion.estado != 'AP' && editable">
+              <app-archivo placeholder="Subir imagen" (file)="setImagen2($event)" classIcon="feather icon-image"
+                [accept]="nemonicoFile.mimetype" [maxSize]="nemonicoFile.size_max * 1024 * 1024"
+                title="En caso de que la reunión fue realizada de manera virtual, por favor, adjunte una imagen que muestre la hora de fin.">
+              </app-archivo>
+            </div>
+            <div class="input-group mb-3" *ngIf="reunion.url_imagen_fin">
+              <a [href]="reunion.url_imagen_fin" target="_blank">
+                <i class="feather icon-download-cloud"></i> <strong> Imagen de fin de reunión</strong>
+              </a>
+            </div>
+          </app-card>
+        </div>
+
+        <div class="col-sm-12" *ngIf="this.reunion.estado != 'AP' && editable">
+          <div class="form-group fill text-right">
+            <button (click)="finalizarReunion();" class="btn btn-success btn-sm btn-round has-ripple"><i
+                class="fa fa-calendar-check-o"></i>Finalizar reunion</button>
+          </div>
+        </div>
+      </div>
+    </app-card>
+  </div>
+
+</div>
+
+
+<div *ngIf="asignarActividadesB && actividadInscripcion">
+  <app-asignarActividad [id_persona]="persona.id_persona" [id_sub_programa]="actividadInscripcion.id_sub_programa"
+    [id_etapa]="actividadInscripcion.id_etapa" (cancelar)="asignarActividadesB=false;"
+    [id_reunion]="reunion.id_reunion">
+  </app-asignarActividad>
+</div>
+
+<app-ui-modal [dialogClass]="'modal-lg'" #calificarEmprendimientoModal static="true">
+  <div class="app-modal-header">
+    <h5 class="modal-title">Calificar emprendedor</h5>
+    <button type="button" class="close basic-close" data-dismiss="modal" aria-label="Close"
+      (click)="cancelarEvaluacion(null)"><span aria-hidden="true">&times;</span></button>
+  </div>
+  <div class="app-modal-body" *ngIf="evaluar">
+    <app-evaluacion [id_rubrica]="id_rubrica" [id_evaluacion]="id_evaluacion" [id_persona]="emprendedor.id_persona"
+      [id_reunion]="reunion.id_reunion" [id_evaluador]="usuario.id_persona" [id_usuario_evaluador]="usuario.id_usuario"
+      [id_asistencia_tecnica]="usuario.id_asistente_tecnico" [id_emprendedor]="emprendedor.id_emprendedor"
+      [id_emprendimiento]="emprendedor.id_emprendimiento" [mostrarCalificacion]="mostrarCalificacion"
+      [hideHeader]="hideHeader" [opciones]="opciones" (finalizarEvaluacion)="finalizarEvaluacion($event)"
+      [hideFinalizar]="hideFinalizar" [hideGrabar]="hideGrabar" (salirEvaluacion)="cancelarEvaluacion($event)">
+    </app-evaluacion>
+  </div>
+</app-ui-modal>

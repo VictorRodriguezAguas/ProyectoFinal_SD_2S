@@ -1,0 +1,26 @@
+<app-ui-modal #modalMentor [static]="true">
+  <div class="app-modal-header">
+    <h5 class="modal-title">Seleccionar mentor</h5>
+    <button type="button" class="close basic-close" data-dismiss="modal" aria-label="Close"
+      (click)="cancelarMentor();"><span aria-hidden="true">&times;</span></button>
+  </div>
+  <div class="app-modal-body ">
+    <div class="new-cust-card" *ngIf="listaMentores.length > 0">
+      <perfect-scrollbar [style.max-height]="'415px'" [style.padding-top]="0">
+        <div class="align-middle m-b-25" *ngFor="let mentor of listaMentores" (click)="seleccionarMentor(mentor);">
+          <img [src]="getFoto(mentor.url_foto)" alt="user image" class="img-radius align-top m-r-15">
+          <div class="d-inline-block">
+            <a href="javascript:">
+              <h6 [innerText]="mentor.nombre + ' ' + mentor.apellido">Alex Thompson</h6>
+            </a>
+            <p class="m-b-0" [innerText]="tema_mentoria">Cheers!</p>
+            <!--span class="status deactive"><i class="feather icon-check-circle"></i></span-->
+          </div>
+        </div>
+      </perfect-scrollbar>
+    </div>
+    <div class="new-cust-card" *ngIf="listaMentores.length == 0">
+      No hay mentores vigentes
+    </div>
+  </div>
+</app-ui-modal>

@@ -1,0 +1,115 @@
+
+
+<div class="row">
+  <div class="col-sm-12">
+    <app-card [hidHeader]="true" cardClass="user-profile-list" [options]="false">
+      <div class="row align-items-center m-l-0">
+        <div class="col-sm-6"></div>
+        <div class="col-sm-6 text-right">
+          <button class="btn btn-success btn-sm btn-round has-ripple" 
+            (click)="nuevoPeriodo()"><i class="feather icon-plus"></i> Nuevo periodo
+          </button>
+        </div>
+      </div>
+      <div class="dt-responsive table-responsive">
+        <table datatable class="table table-striped row-border table-hover" [dtTrigger]="dtTrigger">
+          <thead>
+            <tr>
+              <th>Contrato</th>
+              <th>Fecha inicio</th>
+              <th>Fecha Fin</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let periodo of periodos; index as i;">
+              <td>{{periodo.contrato}}</td>
+              <td>{{periodo.fecha_inicio}}</td>
+              <td>
+                {{periodo.fecha_fin}}
+                <div class="overlay-edit">
+                  {{periodo.fecha_fin}}
+                  <!--button (click)="eliminarPeriodo(i)" type="button" class="btn btn-icon btn-danger"><i
+                      class="feather icon-trash-2"></i></button-->
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-card>
+  </div>
+</div>
+
+<app-ui-modal [dialogClass]="'modal-lg'" #periodoModal>
+  <div class="app-modal-header">
+    <h5 class="modal-title">Periodo</h5>
+    <button type="button" class="close basic-close" data-dismiss="modal" aria-label="Close"
+      (click)="periodoModal.hide()"><span aria-hidden="true">&times;</span></button>
+  </div>
+  <div class="app-modal-body" *ngIf="periodo">
+    <form class="form-1 needs-validation" id="form-1" novalidate>
+      <div class='row'>
+
+        <div class='col-md-6'>
+          <div class="form-group mb-3">
+            <label class="form-control-label">Fecha Inicio</label>
+            <input [(ngModel)]="periodo.fecha_inicio" [ngModelOptions]="{standalone: true}" type="date"
+              id="selecthorainicio" class="form-control" placeholder="Fecha inicio">
+          </div>
+        </div>
+
+        <div class='col-md-6'>
+          <div class="form-group mb-3">
+            <label class="form-control-label">Fecha fin</label>
+            <input [(ngModel)]="periodo.fecha_fin" [ngModelOptions]="{standalone: true}" type="date" id="selecthorafin"
+              class="form-control" placeholder="Fecha fin">
+          </div>
+        </div>
+
+        <div class='col-md-6'>
+          <div class="form-group mb-3">
+            <label class="form-control-label">Max horas a la semana</label>
+            <input [(ngModel)]="periodo.max_horas_semana" [ngModelOptions]="{standalone: true}" type="number"
+              id="selecthorafin" class="form-control" placeholder="Máximo horas a la semana">
+          </div>
+        </div>
+
+        <div class='col-md-6'>
+          <div class="form-group mb-3">
+            <label class="form-control-label">Max horas al mes</label>
+            <input [(ngModel)]="periodo.max_horas_mes" [ngModelOptions]="{standalone: true}" type="number"
+              id="selecthorafin" class="form-control" placeholder="Máximo horas al mes">
+          </div>
+        </div>
+
+        <div class='col-md-6'>
+          <div class="form-group mb-3">
+            <label class="form-control-label">
+              Edición del programa
+            </label>
+            <select class="form-control "  required
+              [(ngModel)]="periodo.id_edicion" [ngModelOptions]="{standalone: true}"
+              placeholder="Seleccione">
+              <option value="">Seleccione</option>
+              <option *ngFor="let item of listaEdiciones" [value]="item.id"
+                [innerText]="item.nombre"></option>
+            </select>
+          </div>
+        </div>
+
+        <div class='col-md-6'>
+          <div class="form-group mb-3">
+            <label class="form-control-label">Contrato</label>
+            <input class="form-control" [(ngModel)]="periodo.contrato" [ngModelOptions]="{standalone: true}"
+              placeholder="Contrato">
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </div>
+  <div class="app-modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="periodoModal.hide()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="agregarPeriodo()">Agregar y guardar periodo</button>
+  </div>
+</app-ui-modal>

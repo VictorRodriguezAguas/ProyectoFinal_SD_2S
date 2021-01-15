@@ -1,0 +1,64 @@
+<app-ui-modal #asignarActividad [dialogClass]="'modal-lg'" [static]="true">
+  <div class="app-modal-header">
+    <h5 class="modal-title">Asignación de nuevas actividades</h5>
+    <button type="button" class="close basic-close" data-dismiss="modal" aria-label="Close" (click)="_cancelar()"><span aria-hidden="true">&times;</span></button>
+  </div>
+  <div class="app-modal-body">
+    <app-card cardTitle="Left Nav Wizard" [options]="false" [hidHeader]="true">
+      <aw-wizard #wizard class="arc-wizard" navBarLocation="left">
+        <aw-wizard-step stepTitle="Asignadas">
+          <div class="row">
+            <div class="col-sm-12" *ngIf="listaActividadesAsignadas">
+              <h5>Actividades asignadas</h5>
+              <hr>
+              <div id='treeparent'>
+                <ejs-treeview id='treeelement' [fields]='field' [allowMultiSelection]='allowMultiSelection'
+                  (dataSourceChanged)="changeDataSource($event)"
+                  [allowDragAndDrop]='allowDragAndDrop' (nodeDragStop)='dragStop($event)' (nodeDragging)='nodeDrag($event)'></ejs-treeview>
+              </div>
+              <!--app-asignarActividad [listaActividad]="listaActividadesAsignadas" (getData)="listaActividadesS = $event.data;"></app-asignarActividad-->
+            </div>
+            <div class="col-sm-12 centered-content">
+              <div class="btn-group mt-10">
+                <button type="button" class="btn btn-primary btn-sm" awNextStep>Siguiente</button>
+              </div>
+            </div>
+          </div>
+        </aw-wizard-step>
+        <aw-wizard-step stepTitle="Asignar">
+          <div class="row">
+            <div class="col-sm-12" *ngIf="listaActividadesNew">
+              <h5>Actividades para asignar</h5>
+              <hr>
+              <app-TreeChecklistExample [data]="listaActividadesNew" #treeMenu (setLista)="setActividades($event)"></app-TreeChecklistExample>
+            </div>
+            <div class="col-sm-12 centered-content">
+              <div class="btn-group mt-10">
+                <button type="button" class="btn btn-secondary btn-sm" awPreviousStep>Atrás</button>
+                <button type="button" class="btn btn-primary btn-sm" (click)="unirActividades()">Siguiente</button>
+              </div>
+            </div>
+          </div>
+        </aw-wizard-step>
+        <aw-wizard-step stepTitle="Ordenar">
+          <div class="row">
+            <div class="col-sm-12" *ngIf="listaActividadesOrden">
+              <h5>Ordenar flujo de nuevas actividades</h5>
+              <hr>
+              <ejs-treeview id='treeelement' [fields]='fieldAsignacion' [allowMultiSelection]='true'
+                  (dataSourceChanged)="getOrden($event)"
+                  [allowDragAndDrop]='true'></ejs-treeview>
+            </div>
+            <div class="col-sm-12 centered-content">
+              <div class="btn-group mt-10">
+                <button type="button" class="btn btn-secondary btn-sm" awPreviousStep>Atrás</button>
+                <button type="button" class="btn btn-success btn-sm" (click)="grabarAsignacion()">Finalizar</button>
+              </div>
+            </div>
+          </div>
+        </aw-wizard-step>
+      </aw-wizard>
+    </app-card>
+  </div>
+</app-ui-modal>
+

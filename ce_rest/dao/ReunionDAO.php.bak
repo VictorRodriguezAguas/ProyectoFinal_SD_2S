@@ -1,0 +1,105 @@
+<?php
+
+/**
+ * Description of ReunionDAO
+ *
+ * @author Mauricio Guzman
+ */
+
+class ReunionDAO {
+
+    private $con;
+
+    function setConexion($con) {
+        $this->con = $con;
+    }
+
+
+    function loadMeetingType($row){
+        $respuesta = new stdClass();
+        $respuesta->id_reunion = $row["id"];
+        $respuesta->id_agenda = $row["id_agenda"];
+        $respuesta->hora_inicio_agenda = $row["hora_inicio_agenda"];
+        $respuesta->hora_fin_agendad = $row["hora_fin_agendad"];
+        $respuesta->fecha_agendada = $row["fecha_agendada"];
+        $respuesta->hora_inicio_reunion = $row["hora_inicio"];
+        $respuesta->hora_fin_reunion = $row["hora_fin"];
+        $respuesta->url_archivo_reunion = $row["url_archivo"];
+        $respuesta->temas = $row["temas"];
+        $respuesta->acuerdos = $row["acuerdos"];
+        $respuesta->observacion = $row["observacion"];
+        $respuesta->estado = $row["estado"];
+        return $respuesta;
+    }
+
+
+    function getMeetingById($agenda) {
+        $sql = "select a.*, 
+            concat((select valor from parametro_sistema where nombre = 'RUTA_ARCHIVOS_URL'), a.archivo) as url_archivo
+                from reunion a
+                where id_agenda = '$agenda'";
+        $resultado_consulta = $this->con->getConexion()->query($sql);
+        $lista = array();
+        $i=0;
+
+        while($row = $resultado_consulta->fetch_array()){
+            $lista[$i] = $this->loadMeetingType($row);
+            $i++;
+        }
+        return $lista;
+    }
+
+    
+    function getEnrollmentActivity($diary) {
+        $sql = "select c.nombre, b.id as id_actividad_inscripcion, b.* 
+                from actividad_edicion  a
+                inner join actividad_edicion  b on b.id = a.predecesor
+                inner join actividad_etapa c on c.id = b.id_actividad_etapa and c.id_tipo_actividad = 10
+                where a.id_agenda = '$diary'";
+
+        $resultado_consulta = $this->con->getConexion()->query($sql);
+        $id_actividad_inscripcion = 0;
+        if($row = $resultado_consulta -> fetch_array(MYSQLI_ASSOC)){
+            $id_actividad_inscripcion = $row["id_actividad_inscripcion"];
+        }
+
+        return $id_actividad_inscripcion;
+    }
+
+    function insertarReunion($reunion) {
+        $sql = "INSERT INTO `reunion` (`id_agenda`, `hora_inicio_agenda`, `hora_fin_agendad`, `fecha_agendada`, 
+                `hora_inicio`, `hora_fin`, `temas`, `acuerdos`, `observacion`, `estado`)
+                VALUES('$reunion->id_agenda','$reunion->hora_inicio_agenda','$reunion->hora_fin_agendad','$reunion->fecha_agendada','$reunion->hora_inicio_reunion','$reunion->hora_fin_reunion','$reunion->temas',
+                	'$reunion->acuerdos','$reunion->observacion','$reunion->estado')";
+
+        $result = mysqli_query($this->con->getConexion(), $sql) or die(mysqli_error($this->con->getConexion()));
+        $id = mysqli_insert_id($this->con->getConexion());
+        return $id;
+    }
+
+    function actualizarReunion($reunion) {
+        $sql = "UPDATE `reunion` SET `hora_fin` = '$reunion->hora_fin_reunion',
+                                    `temas` = '$reunion->temas',
+                                    `acuerdos` = '$reunion->acuerdos',
+                                    `observacion` = '$reunion->observacion',
+                                    `archivo` = '$reunion->url_archivo_reunion',
+                                    `tipo_reunion` = '$reunion->tipo_reunion',
+                                    `url_reunion` = '$reunion->url_reunion',
+                                    `estado` = '$reunion->estado'
+               WHERE `id` = '$reunion->id_reunion'";
+               
+        mysqli_query($this->con->getConexion(), $sql) or die(mysqli_error($this->con->getConexion()));
+    }
+
+    function getReunion($id){
+        $sql = "Select a.*, 
+                    concat((select valor from parametro_sistema where nombre = 'RUTA_ARCHIVOS_URL'), a.archivo) as url_archivo
+                from reunion a where a.id = '$id'";
+        return $this->con->getEntidad($sql);
+    }
+    
+    function getReunionxAgenda($id){
+        $sql = "Select * from reunion where id_agenda = '$id'";
+        return $this->con->getEntidad($sql);
+    }
+}

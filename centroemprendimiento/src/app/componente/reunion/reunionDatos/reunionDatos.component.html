@@ -1,0 +1,147 @@
+<app-card [hidHeader]="true" [options]="false" cardClass="user-card user-card-3 support-bar1" [isCardFooter]="false">
+  <div class="text-center">
+    <img *ngIf="emprendedor" class="img-radius img-fluid wid-150" [src]="emprendedor.url_foto"
+      (error)="pictNotLoading($event)" alt="User image">
+    <h3 class="mb-1 mt-3 f-w-400">{{this.emprendedor.nombre}} {{ this.emprendedor.apellido}}</h3>
+    <p *ngIf="emprendedor" class="mb-3 text-muted">{{ this.emprendedor.email }}</p>
+
+    <app-redes_sociales [redes_sociales]="emprendedor.redes_sociales"></app-redes_sociales>
+  </div>
+</app-card>
+
+<app-card cardTitle="Emprendimiento" blockClass="task-details" [options]="false" *ngIf="vista==1">
+  <table class="table" *ngIf="emprendedor">
+    <tbody>
+      <tr>
+        <td><i class="fa fa-building m-r-5"></i> Nombre:</td>
+        <td class="text-right">
+          <span class="float-right">
+            <a class="text-secondary" href="javascript:" [innerText]="getDato(emprendedor.nombre_emprendimiento)"></a>
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <td><i class="fa fa-user m-r-5"></i>Tipo Persona</td>
+        <td class="text-right" [innerText]="getDato(emprendedor.tipo_persona)"></td>
+      </tr>
+      <tr>
+        <td><i class="fa fa-user m-r-5"></i> RUC/RISE:</td>
+        <td class="text-right" [innerText]="getDato(emprendedor.ruc_rise)"></td>
+      </tr>
+      <tr>
+        <td><i class="fa fa-users m-r-5"></i> Socios:</td>
+        <td class="text-right" [innerText]="getDato(emprendedor.cant_socios)"></td>
+      </tr>
+      <tr>
+        <td><i class="fas fa-chart-line m-r-5"></i> Ventas mensuales:</td>
+        <td class="text-right" [innerText]="getDato(emprendedor.venta_mensual)"></td>
+      </tr>
+      <tr>
+        <td><i class="fa fa-building m-r-5"></i> Nombre comercial:</td>
+        <td class="text-right" [innerText]="getDato(emprendedor.nombre_comercial)"></td>
+      </tr>
+      <tr>
+        <td><i class="fa fa-building m-r-5"></i>Razon social</td>
+        <td class="text-right"><a class="text-secondary" href="javascript:"
+            [innerText]="getDato(emprendedor.razon_social)"></a>
+        </td>
+      </tr>
+      <tr>
+        <td><i class="fa fa-users m-r-5"></i>Cantidad de personal</td>
+        <td class="text-right" [innerText]="getDato(emprendedor.numero_labora)"></td>
+      </tr>
+      <!--tr>
+    <td><i class="fa fa-building m-r-5"></i>Lugar comercializacion</td>
+    <td class="text-right">{{this.emprendedor.lugar_comercializacion}}</td>
+  </tr-->
+      <tr *ngIf="archivo">
+        <td><i class="fa fa-cloud m-r-5"></i>Archivo</td>
+        <td class="text-right">
+          <!--a class="fa fa-download m-r-5" (click)="downloadFile(archivos[0])" target="_blank"> Descargar</a-->
+          <a class="fa fa-download m-r-5" [href]="archivo.url_archivo + archivo.modelo_negocio_archivo" target="_blank">
+            Descargar</a>
+        </td>
+      </tr>
+      <tr *ngIf="archivo">
+        <td>
+          <p>{{ archivo.modelo_negocio_archivo }}</p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</app-card>
+
+<app-card cardTitle="Emprendimiento" blockClass="p-0 scrollabel-body" [options]="false" *ngIf="vista==2">
+  <div class="mt-3 mb-3">
+    <span class="px-4 d-block">
+      <i class="fa fa-building m-r-5"></i> <strong>Nombre: </strong><br>
+      <span class="text-muted" [innerText]="getDato(emprendedor.nombre_emprendimiento)"></span>
+    </span>
+    <hr>
+  </div>
+  <div class="mt-3 mb-3">
+    <span class="px-4 d-block">
+      <i class="fa fa-user m-r-5"></i><strong>Tipo Persona: </strong>
+      <span class="text-muted float-right f-14" [innerText]="getDato(emprendedor.tipo_persona)"></span>
+    </span>
+    <hr>
+  </div>
+  <div class="mt-3 mb-3">
+    <span class="px-4 d-block">
+      <i class="fa fa-user m-r-5"></i><strong> RUC/RISE:</strong>
+      <span class="text-muted float-right f-14" [innerText]="getDato(emprendedor.ruc_rise)"></span>
+    </span>
+    <hr>
+  </div>
+  <div class="mt-3 mb-3">
+    <span class="px-4 d-block">
+      <i class="fa fa-users m-r-5"></i><strong> Socios:</strong>
+      <span class="text-muted float-right f-14" [innerText]="getDato(emprendedor.cant_socios)"></span>
+    </span>
+    <hr>
+  </div>
+  <div class="mt-3 mb-3">
+    <span class="px-4 d-block">
+      <i class="fas fa-chart-line m-r-5"></i><strong> Ventas mensuales:</strong>
+      <span class="text-muted float-right f-14" [innerText]="getDato(emprendedor.venta_mensual)"></span>
+    </span>
+    <hr>
+  </div>
+  <div class="mt-3 mb-3">
+    <span class="px-4 d-block">
+      <i class="fa fa-building m-r-5"></i><strong> Nombre comercial:</strong> <br>
+      <span class="text-muted" [innerText]="getDato(emprendedor.nombre_comercial)"></span>
+    </span>
+    <hr>
+  </div>
+  <div class="mt-3 mb-3">
+    <span class="px-4 d-block">
+      <i class="fa fa-building m-r-5"></i><strong>Razon social:</strong> <br>
+      <span class="text-muted" [innerText]="getDato(emprendedor.razon_social)"></span>
+    </span>
+    <hr>
+  </div>
+  <div class="mt-3 mb-3">
+    <span class="px-4 d-block">
+      <i class="fa fa-users m-r-5"></i><strong>Cantidad de personal:</strong>
+      <span class="text-muted float-right f-14" [innerText]="getDato(emprendedor.numero_labora)"></span>
+    </span>
+    <hr>
+  </div>
+  <div class="mt-3 mb-3" *ngIf="archivo">
+    <span class="px-4 d-block">
+      <i class="fa fa-cloud m-r-5"></i><strong>Archivo:</strong>
+      <a class="fa fa-download m-r-5 float-right f-14" 
+        *ngIf="archivo"
+        [href]="archivo.url_archivo + archivo.modelo_negocio_archivo" target="_blank">
+        Descargar</a>
+      <span class="text-muted" *ngIf="archivo">
+        {{ archivo.modelo_negocio_archivo }}
+      </span>
+      <span class="text-muted" *ngIf="!archivo">
+        No ha subido archivo
+      </span>
+    </span>
+    <hr>
+  </div>
+</app-card>

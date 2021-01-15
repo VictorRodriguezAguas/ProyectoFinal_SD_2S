@@ -1,0 +1,17 @@
+<!--input type="string" [(ngModel)]="address" />
+<button (click)="search()">Buscar</button-->
+
+<div class="input-group mb-3">
+  <input type="text" class="custom-select custom-input"
+    [(ngModel)]="address">
+  <div class="input-group-prepend">
+    <label class="input-group-text" (click)="search()" for="inputGroupSelect01">
+      <i class="feather icon-search"></i> Buscar
+    </label>
+  </div>
+</div>
+
+<agm-map [latitude]="lat" [zoom]="zoom" [longitude]="lng">
+  <agm-marker *ngIf='location' [latitude]="lat" [longitude]="lng" [markerDraggable]="true"
+    (dragEnd)="markerDragEnd($event)"></agm-marker>
+</agm-map>

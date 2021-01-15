@@ -1,0 +1,208 @@
+<app-card [options]="false" cardTitle="Reserva de espacios del centro de emprendimiento" captionClass="mb-0 text-muted"
+  cardClass="mb-0" blockClass="p-0">
+  <div *ngIf="stage == 1">
+
+    <div class="row">
+      <div class="col-sm-6">
+        <input type="date" [(ngModel)]="start_date" placeholder="Fecha de inicio" class="form-control">
+      </div>
+      <div class="col-sm-2">
+        <button (click)="filter()" class="btn btn-primary">FILTRAR</button>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-md-6 col-xl-6">
+        <app-card [hidHeader]="true" cardClass="amount-card overflow-hidden" blockClass="p-0">
+          <div class="row">
+            <div class="col-4">
+              <div class="p-20 p-b-0">
+                <h5 class="text-c-blue f-w-400">SALA DE COMPUTO</h5>
+                <span class="text-c-green">
+                  <button (click)="reserve()" class="btn btn-warning">RESERVAR</button>
+                </span>
+              </div>
+            </div>
+            <div class="col-8">
+              <div class="mr-2" style="display: block">
+                <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+                  [colors]="barChartColor" [plugins]="barChartPlugins" [legend]="barChartLegend"
+                  [chartType]="barChartType">
+                </canvas>
+              </div>
+            </div>
+
+          </div>
+        </app-card>
+      </div>
+      <div class="col-md-6 col-xl-6">
+        <app-card [hidHeader]="true" cardClass="amount-card overflow-hidden" blockClass="p-0">
+          <div class="row">
+            <div class="col-4">
+              <div class="p-20 p-b-0">
+                <h5 class="text-c-blue f-w-400">AGORA</h5>
+                <span class="text-c-green">
+                  <button (click)="reserve()" class="btn btn-warning">RESERVAR</button>
+                </span>
+              </div>
+            </div>
+            <div class="col-8">
+              <div class="mr-2" style="display: block">
+                <canvas baseChart [datasets]="barChartData1" [labels]="barChartLabels" [options]="barChartOptions"
+                  [colors]="barChartColor" [plugins]="barChartPlugins" [legend]="barChartLegend"
+                  [chartType]="barChartType">
+                </canvas>
+              </div>
+            </div>
+
+          </div>
+        </app-card>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 col-xl-6">
+        <app-card [hidHeader]="true" cardClass="amount-card overflow-hidden" blockClass="p-0">
+          <div class="row">
+            <div class="col-4">
+              <div class="p-20 p-b-0">
+                <h5 class="text-c-blue f-w-400">SALA DE COMPUTO</h5>
+                <span class="text-c-green">
+                  <button (click)="reserve()" class="btn btn-warning">RESERVAR</button>
+                </span>
+              </div>
+            </div>
+            <div class="col-8">
+              <div class="mr-2" style="display: block">
+                <canvas baseChart [datasets]="barChartData2" [labels]="barChartLabels" [options]="barChartOptions"
+                  [colors]="barChartColor" [plugins]="barChartPlugins" [legend]="barChartLegend"
+                  [chartType]="barChartType">
+                </canvas>
+              </div>
+            </div>
+
+          </div>
+        </app-card>
+      </div>
+      <div class="col-md-6 col-xl-6">
+        <app-card [hidHeader]="true" cardClass="amount-card overflow-hidden" blockClass="p-0">
+          <div class="row">
+            <div class="col-4">
+              <div class="p-20 p-b-0">
+                <h5 class="text-c-blue f-w-400">AGORA</h5>
+                <span class="text-c-green">
+                  <button (click)="reserve()" class="btn btn-warning">RESERVAR</button>
+                </span>
+              </div>
+            </div>
+            <div class="col-8">
+              <div class="mr-2" style="display: block">
+                <canvas baseChart [datasets]="barChartData3" [labels]="barChartLabels" [options]="barChartOptions"
+                  [colors]="barChartColor" [plugins]="barChartPlugins" [legend]="barChartLegend"
+                  [chartType]="barChartType">
+                </canvas>
+              </div>
+            </div>
+
+          </div>
+        </app-card>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 col-xl-6">
+        <app-card [hidHeader]="true" cardClass="amount-card overflow-hidden" blockClass="p-0">
+          <div class="row">
+            <div class="col-4">
+              <div class="p-20 p-b-0">
+                <h5 class="text-c-blue f-w-400">SALA DE COMPUTO</h5>
+                <span class="text-c-green">
+                  <button (click)="reserve()" class="btn btn-warning">RESERVAR</button>
+                </span>
+              </div>
+            </div>
+            <div class="col-8">
+              <div class="mr-2" style="display: block">
+                <canvas baseChart [datasets]="barChartData4" [labels]="barChartLabels" [options]="barChartOptions"
+                  [colors]="barChartColor" [plugins]="barChartPlugins" [legend]="barChartLegend"
+                  [chartType]="barChartType">
+                </canvas>
+              </div>
+            </div>
+
+          </div>
+        </app-card>
+      </div>
+    </div>
+
+  </div>
+</app-card>
+
+<app-card cardTitle="Agenda" cardClass="mb-0" [options]="false" *ngIf="stage == 2">
+  <div class="app" *ngIf="!notSupported">
+    <button (click)="back()" class="btn btn-info">Regresar</button>
+    <button (click)="clearModal(); modalProject.show()" class="btn btn-primary">Reservar espacio</button>
+    <div class="app-calendar">
+      <full-calendar #Eventcalendar defaultView="timeGridWeek" [plugins]="calendarPlugins" [header]="{
+            left: 'prev,next today',
+            center: 'title',
+            right: 'timeGridWeek,timeGridDay'
+          }" [events]="listaEventos" locale="es" [minTime]="'07:00:00'" [maxTime]="'21:00:00'"
+        [slotDuration]="'01:00:00'" weekends=false (eventClick)="modalProject.show(); select($event)" [editable]="true">
+      </full-calendar>
+    </div>
+  </div>
+</app-card>
+
+<app-ui-modal #modalProject>
+  <div class="app-modal-header">
+    <h5 class="modal-title">ASISTENCIA TECNICA</h5>
+    <button type="button" class="close basic-close" data-dismiss="modal" aria-label="Close"
+      (click)="modalProject.hide()"><span aria-hidden="true">&times;</span></button>
+  </div>
+
+  <div class="app-modal-body">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="form-group fill">
+          <input type="date" [(ngModel)]="event_date" class="form-control" id="date" placeholder="Fecha">
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group fill">
+          <input type="time" [(ngModel)]="event_start" class="form-control" id="Start" placeholder="Hora inicio">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group fill">
+          <input type="time" [(ngModel)]="event_end" class="form-control" id="end" placeholder="Hora fin">
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="form-group">
+          <select [(ngModel)]="event_mentor" class="form-control" id="mentor">
+            <option value="">Seleccione mentor</option>
+            <option value="1">Mentor1</option>
+            <option value="2">Mentor2</option>
+            <option value="3">Mentor3</option>
+            <option value="4">Mentor4</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="app-modal-footer">
+    <button type="button" class="btn btn-danger" data-dismiss="modal"
+      (click)="event_edit=false; modalProject.hide()">Cancelar</button>
+    <button *ngIf="!event_edit" (click)="modalProject.hide();addEvent()" type="button"
+      class="btn btn-primary">Agendar</button>
+    <button *ngIf="event_edit" (click)="modalProject.hide();updateEvent()" type="button"
+      class="btn btn-primary">Re-Agendar</button>
+  </div>
+</app-ui-modal>

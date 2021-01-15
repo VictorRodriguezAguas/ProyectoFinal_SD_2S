@@ -1,0 +1,417 @@
+<div class="row btn-page">
+  <div class="col-sm-12">
+    <app-card cardTitle="Foros" [options]="false">
+      <div class="row">
+        <div class="col-sm-4 border-right">
+          <h3>14</h3>
+          <h4 class="text-success">abiertos</h4>
+          <!-- <span class="">Assigned to me: 7</span> -->
+        </div>
+        <div class="col-sm-4 border-right">
+          <h3>17</h3>
+          <h4 class="text-primary">En progreso</h4>
+          <!-- <span class="">Assigned to me: 8</span> -->
+        </div>
+        <div class="col-sm-4 border-right">
+          <h3>10</h3>
+          <h4 class="text-danger">cerrados</h4>
+          <!-- <span class="">Assigned to me: 4</span> -->
+        </div>
+        <!-- <div class="col-md-2 col-xs-6 border-right">
+            <h3>1</h3>
+            <h6 class="text-success">Awaiting Feedback</h6>
+            <span class="">Assigned to me: 3</span>
+          </div>
+          <div class="col-md-2 col-xs-6">
+            <h3>6</h3>
+            <h6 class="text-success">Complete</h6>
+            <span class="">Assigned to me: 5</span>
+          </div> -->
+      </div>
+    </app-card>
+  </div>
+  <div class="col-sm-12">
+    <app-card [hidHeader]="true" cardClass="card-datatable">
+      <div class="row align-items-center m-l-0">
+        <div class="col-sm-6"></div>
+        <div class="col-sm-6 text-right">
+          <button class="btn btn-success btn-sm btn-round has-ripple" (click)="modalProject.show()"><i
+              class="feather icon-plus"></i> Crea un nuevo foro</button>
+        </div>
+        <app-ui-modal #modalProject>
+          <div class="app-modal-header">
+            <h5 class="modal-title">Crea un nuevo foro para la comunidad epíca</h5>
+            <button type="button" class="close basic-close" data-dismiss="modal" aria-label="Close"
+              (click)="modalProject.hide()"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="app-modal-body">
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input" id="customCheck1">
+              <!-- <label class="custom-control-label" for="customCheck1">Public</label> -->
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input" id="customCheck2">
+              <!-- <label class="custom-control-label" for="customCheck2">Billable</label> -->
+            </div>
+            <div [formGroup]="foro" class="form-group">
+              <input type="text" class="form-control" id="Subject" placeholder="Tema del foro"
+                formControlName="temaforo">
+            </div>
+            <div class="form-group">
+              <!-- <input type="text" class="form-control" id="Rate" placeholder="Hourly Rate"> -->
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div [formGroup]="foro" class="form-group fill">
+                  <input type="date" class="form-control" id="Start" placeholder="Fecha de inicio"
+                    formControlName="fecha_inicio">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div [formGroup]="foro" class="form-group fill">
+                  <input type="date" class="form-control" id="Deadline" placeholder="Fecha de finalización"
+                    formControlName="fecha_fin">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div [formGroup]="foro" class="form-group">
+                  <select class="form-control" id="Billing" formControlName="prioridad">
+                    <option value=""> Prioridad del foro</option>
+                    <option value="1">Baja</option>
+                    <option value="2">Media</option>
+                    <option value="3">Alta</option>
+                    <option value="4">Urgente</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <!-- <div class="form-group">
+                    <select class="form-control" id="Status">
+                      <option value="">Select Status</option>
+                      <option value="1-week">Week</option>
+                      <option value="2-week">2 Weeks</option>
+                      <option value="1-month">1 Month</option>
+                      <option value="2-month">2 Months</option>
+                      <option value="3-month">3 Months</option>
+                      <option value="6-month">6 Months</option>
+                      <option value="1-year">1 Year</option>
+                      <option value="custom">Custom</option>
+                    </select>
+                  </div> -->
+              </div>
+            </div>
+            <div [formGroup]="foro" class="form-group">
+              <select class="form-control" id="Related" formControlName="relacion">
+                <option value="">El foro esta relacionado a: </option>
+                <option value="project">Tecnología</option>
+                <option value="invoice">Negocios </option>
+                <option value="customer">Marketing digital </option>
+                <!-- <option value="estimate">Estimate </option>
+                  <option value="contract">Contract </option>
+                  <option value="ticket">Ticket </option>
+                  <option value="expense">Expense </option>
+                  <option value="lead">Lead </option>
+                  <option value="proposal">Proposal </option> -->
+              </select>
+            </div>
+            <div [formGroup]="foro" class="form-group">
+              <tag-input class="tag-chips" [(ngModel)]="items" [modelAsStrings]="true" formControlName="Tags">
+              </tag-input>
+            </div>
+            <div [formGroup]="foro" class="form-group">
+              <label class="label">Contenido del foro</label>
+              <app-tinymce [(ngModel)]='basicContent' #tinymce='tinymce' formControlName="contenido"></app-tinymce>
+            </div>
+          </div>
+          <div class="app-modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal"
+              (click)="modalProject.hide()">Salir</button>
+            <button type="button" class="btn btn-primary" (click)="crearForo()" [formGroup]="foro">Crear foro</button>
+          </div>
+        </app-ui-modal>
+      </div>
+      <div class="table-responsive">
+        <table datatable id="report-table" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Tema del foro</th>
+              <th>Status</th>
+              <th>Fecha de inicio</th>
+              <th>Fecha de finalización</th>
+              <th>Usuarios participantes</th>
+              <th>Tags</th>
+              <th>Prioridad</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of listaforos">
+
+              <td>{{item.id}}</td>
+              <td><a href="javascript:">{{item.tema}}</a>
+                <p class="mb-2">{{item.relacionado}}</p>
+                <a [routerLink]="['/paginas/foro']" class="btn btn-icon btn-outline-primary"><i
+                    class="feather icon-eye"></i></a>
+                <!-- <a href="javascript:" class="btn btn-icon btn-outline-success"><i class="feather icon-edit"></i></a>
+                  <a href="javascript:" class="btn btn-icon btn-outline-danger"><i class="feather icon-trash-2"></i></a> -->
+                <small class="d-block">
+                  <!-- <a href="javascript:">Start Timer</a> |
+                    <a href="javascript:">Edit</a> |
+                    <a href="javascript:" class="text-danger">Delete </a> -->
+                </small>
+              </td>
+              <td>
+                <span class="badge badge-primary inline-block">{{item.estado}}</span>
+              </td>
+              <td>{{item.fecha_inicio}}</td>
+              <td>{{item.fecha_fin}}</td>
+              <td>
+                <p class="mb-2">{{item.id_usuario_registro}}</p>
+
+              </td>
+              <td class="text-wrap">
+
+                <span class="badge badge-primary inline-block mr-1">{{item.id_tipo_tematica}}</span>
+
+              </td>
+              <td><span class="badge badge-danger inline-block">{{item.id_prioridad}}</span></td>
+            </tr>
+            <tr>
+              <td>1</td>
+              <td><a href="javascript:">Hatter. 'Does YOUR watch tell you.</a>
+                <p class="mb-2">#5 - THEIR eyes bright and eager with many a.</p>
+                <a href="javascript:" class="btn btn-icon btn-outline-primary"><i class="feather icon-eye"></i></a>
+                <a href="javascript:" class="btn btn-icon btn-outline-success"><i class="feather icon-edit"></i></a>
+                <a href="javascript:" class="btn btn-icon btn-outline-danger"><i class="feather icon-trash-2"></i></a>
+                <small class="d-block">
+                  <!-- <a href="javascript:">Start Timer</a> |
+                  <a href="javascript:">Edit</a> |
+                  <a href="javascript:" class="text-danger">Delete </a> -->
+                </small>
+              </td>
+              <td>
+                <span class="badge badge-primary inline-block">En progreso</span>
+              </td>
+              <td>2019-07-29</td>
+              <td>2019-07-30</td>
+              <td>
+                <img class="img-radius wid-30 mr-1" src="assets/images/user/avatar-3.jpg" data-toggle="tooltip"
+                  data-title="Lorenzo Stroman" alt="Generic placeholder image">
+                <img class="img-radius wid-30" src="assets/images/user/avatar-4.jpg" data-toggle="tooltip"
+                  data-title="Amani Wiegand" alt="Generic placeholder image">
+              </td>
+              <td class="text-wrap">
+                <span class="badge badge-primary inline-block mr-1">bug</span>
+              </td>
+              <td><span class="badge badge-danger inline-block">Urgente</span></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><a href="javascript:">test</a>
+                <p class="mb-2">Recurring Task</p>
+                <a href="javascript:" class="btn btn-icon btn-outline-primary"><i class="feather icon-eye"></i></a>
+                <a href="javascript:" class="btn btn-icon btn-outline-success"><i class="feather icon-edit"></i></a>
+                <a href="javascript:" class="btn btn-icon btn-outline-danger"><i class="feather icon-trash-2"></i></a>
+                <small class="d-block">
+                  <!-- <a href="javascript:">Start Timer</a> |
+                  <a href="javascript:">Edit</a> |
+                  <a href="javascript:" class="text-danger">Delete </a> -->
+                </small>
+              </td>
+              <td>
+                <span class="badge badge-primary inline-block">En progreso</span>
+              </td>
+              <td>2019-07-30</td>
+              <td>2019-07-31</td>
+              <td>
+                <img class="img-radius wid-30 mr-1" src="assets/images/user/avatar-3.jpg" data-toggle="tooltip"
+                  data-title="Lorenzo Stroman" alt="Generic placeholder image">
+                <img class="img-radius wid-30 mr-1" src="assets/images/user/avatar-4.jpg" data-toggle="tooltip"
+                  data-title="Amani Wiegand" alt="Generic placeholder image">
+                <img class="img-radius wid-30" src="assets/images/user/avatar-1.jpg" data-toggle="tooltip"
+                  data-title="Chet Rempel" alt="Generic placeholder image">
+              </td>
+              <td class="text-wrap">
+                <span class="badge badge-primary inline-block mr-1">bug</span>
+                <span class="badge badge-primary inline-block mr-1">revisar</span>
+                <span class="badge badge-primary inline-block mr-1">importante</span>
+                <span class="badge badge-primary inline-block mr-1">logo</span>
+                <!-- <span class="badge badge-primary inline-block">review</span> -->
+              </td>
+              <td><span class="badge badge-primary inline-block">Media</span></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><a href="javascript:">Fix an open issue in our software</a>
+                <p class="mb-2">#1 - Build Website - Flatley-Wolff</p>
+                <a href="javascript:" class="btn btn-icon btn-outline-primary"><i class="feather icon-eye"></i></a>
+                <a href="javascript:" class="btn btn-icon btn-outline-success"><i class="feather icon-edit"></i></a>
+                <a href="javascript:" class="btn btn-icon btn-outline-danger"><i class="feather icon-trash-2"></i></a>
+                <small class="d-block">
+                  <!-- <a href="javascript:">Start Timer</a> |
+                  <a href="javascript:">Edit</a> |
+                  <a href="javascript:" class="text-danger">Delete </a> -->
+                </small>
+              </td>
+              <td>
+                <span class="badge badge-danger inline-block">Cerrado</span>
+              </td>
+              <td>2019-07-29</td>
+              <td>2019-08-12</td>
+              <td>
+                <img class="img-radius wid-30 mr-1" src="assets/images/user/avatar-1.jpg" data-toggle="tooltip"
+                  data-title="Chet Rempel" alt="Generic placeholder image">
+                <img class="img-radius wid-30 mr-1" src="assets/images/user/avatar-4.jpg" data-toggle="tooltip"
+                  data-title="Amani Wiegand" alt="Generic placeholder image">
+                <img class="img-radius wid-30" src="assets/images/user/avatar-3.jpg" data-toggle="tooltip"
+                  data-title="Lorenzo Stroman" alt="Generic placeholder image">
+              </td>
+              <td class="text-wrap"></td>
+              <td><span class="badge badge-primary inline-block">Media</span></td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><a href="javascript:">Add a Test Case for the GCI Website</a>
+                <p class="mb-2">#2 - SEO Optimization - Feeney-Pouros</p>
+                <a [routerLink]="['/paginas/foro']" href="javascript:" class="btn btn-icon btn-outline-primary"><i
+                    class="feather icon-eye"></i></a>
+                <a href="javascript:" class="btn btn-icon btn-outline-success"><i class="feather icon-edit"></i></a>
+                <a href="javascript:" class="btn btn-icon btn-outline-danger"><i class="feather icon-trash-2"></i></a>
+                <small class="d-block">
+                  <!-- <a href="javascript:">Start Timer</a> |
+                  <a href="javascript:">Edit</a> |
+                  <a href="javascript:" class="text-danger">Delete </a> -->
+                </small>
+              </td>
+              <td>
+                <span class="badge badge-primary inline-block">En progreso</span>
+              </td>
+              <td>2019-07-29</td>
+              <td>2019-08-12</td>
+              <td>
+                <img class="img-radius wid-30 mr-1" src="assets/images/user/avatar-1.jpg" data-toggle="tooltip"
+                  data-title="Chet Rempel" alt="Generic placeholder image">
+                <img class="img-radius wid-30 mr-1" src="assets/images/user/avatar-4.jpg" data-toggle="tooltip"
+                  data-title="Amani Wiegand" alt="Generic placeholder image">
+                <img class="img-radius wid-30" src="assets/images/user/avatar-3.jpg" data-toggle="tooltip"
+                  data-title="Lorenzo Stroman" alt="Generic placeholder image">
+              </td>
+              <td class="text-wrap"></td>
+              <td><span class="badge badge-primary inline-block">Media</span></td>
+            </tr>
+            <!-- <tr>
+              <td>5</td>
+              <td><a href="javascript:">Research on improved audio latency</a>
+                <p class="mb-2">#3 - Brochure Design - Gorczany Kreiger</p>
+                <small class="d-block">
+                  <a href="javascript:">Start Timer</a> |
+                  <a href="javascript:">Edit</a> |
+                  <a href="javascript:" class="text-danger">Delete </a>
+                </small>
+              </td>
+              <td>
+                <span class="badge badge-warning inline-block">Awaiting Feedback</span>
+              </td>
+              <td>2019-07-29</td>
+              <td>2019-08-12</td>
+              <td>
+                <img class="img-radius wid-30 mr-1" src="assets/images/user/avatar-4.jpg" data-toggle="tooltip" data-title="Amani Wiegand" alt="Generic placeholder image">
+                <img class="img-radius wid-30" src="assets/images/user/avatar-3.jpg" data-toggle="tooltip" data-title="Lorenzo Stroman" alt="Generic placeholder image">
+              </td>
+              <td class="text-wrap"></td>
+              <td><span class="badge badge-danger inline-block">Urgent</span></td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td><a href="javascript:">Fix an open issue in our software</a>
+                <p class="mb-2">#3 - Brochure Design - Gorczany Kreiger</p>
+                <small class="d-block">
+                  <a href="javascript:">Start Timer</a> |
+                  <a href="javascript:">Edit</a> |
+                  <a href="javascript:" class="text-danger">Delete </a>
+                </small>
+              </td>
+              <td>
+                <span class="badge badge-warning inline-block">Awaiting Feedback</span>
+              </td>
+              <td>2019-07-29</td>
+              <td>2019-08-12</td>
+              <td>
+                <img class="img-radius wid-30 mr-1" src="assets/images/user/avatar-3.jpg" data-toggle="tooltip" data-title="Lorenzo Stroman" alt="Generic placeholder image">
+                <img class="img-radius wid-30" src="assets/images/user/avatar-4.jpg" data-toggle="tooltip" data-title="Amani Wiegand" alt="Generic placeholder image">
+              </td>
+              <td class="text-wrap"></td>
+              <td><span class="badge badge-warning inline-block">High</span></td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td><a href="javascript:">Fix mimetype declaration on Android</a>
+                <p class="mb-2">#4 - Website Redesign - Hilll Inc</p>
+                <small class="d-block">
+                  <a href="javascript:">Start Timer</a> |
+                  <a href="javascript:">Edit</a> |
+                  <a href="javascript:" class="text-danger">Delete </a>
+                </small>
+              </td>
+              <td>
+                <span class="badge badge-warning inline-block">Awaiting Feedback</span>
+              </td>
+              <td>2019-07-29</td>
+              <td>2019-08-12</td>
+              <td>
+                <img class="img-radius wid-30 mr-1" src="assets/images/user/avatar-4.jpg" data-toggle="tooltip" data-title="Amani Wiegand" alt="Generic placeholder image">
+              </td>
+              <td class="text-wrap"></td>
+              <td><span class="badge badge-warning inline-block">High</span></td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td><a href="javascript:">Fix mimetype declaration on Android</a>
+                <p class="mb-2">#1 - Build Website - Flatley-Wolff</p>
+                <small class="d-block">
+                  <a href="javascript:">Start Timer</a> |
+                  <a href="javascript:">Edit</a> |
+                  <a href="javascript:" class="text-danger">Delete </a>
+                </small>
+              </td>
+              <td>
+                <span class="badge badge-success inline-block">Not Started</span>
+              </td>
+              <td>2019-07-29</td>
+              <td>2019-08-19</td>
+              <td>
+                <img class="img-radius wid-30 mr-1" src="assets/images/user/avatar-1.jpg" data-toggle="tooltip" data-title="Amani Wiegand" alt="Generic placeholder image">
+                <img class="img-radius wid-30" src="assets/images/user/avatar-4.jpg" data-toggle="tooltip" data-title="Marshall Morissette" alt="Generic placeholder image">
+              </td>
+              <td class="text-wrap"></td>
+              <td><span class="badge badge-danger inline-block">Urgent</span></td>
+            </tr>
+            <tr>
+              <td>9</td>
+              <td><a href="javascript:">Find/fix 10 broken links in the RTEMS Wiki</a>
+                <p class="mb-2">#2 - SEO Optimization - Feeney-Pouros</p>
+                <small class="d-block">
+                  <a href="javascript:">Start Timer</a> |
+                  <a href="javascript:">Edit</a> |
+                  <a href="javascript:" class="text-danger">Delete </a>
+                </small>
+              </td>
+              <td>
+                <span class="badge badge-success inline-block">Testing</span>
+              </td>
+              <td>2019-07-29</td>
+              <td>2019-08-19</td>
+              <td>
+                <img class="img-radius wid-30 mr-1" src="assets/images/user/avatar-4.jpg" data-toggle="tooltip" data-title="Lorenzo Stroman" alt="Generic placeholder image">
+              </td>
+              <td class="text-wrap"></td>
+              <td><span class="badge badge-danger inline-block">Urgent</span></td>
+            </tr> -->
+          </tbody>
+        </table>
+      </div>
+    </app-card>
+  </div>
+</div>

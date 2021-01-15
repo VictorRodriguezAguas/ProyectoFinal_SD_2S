@@ -1,0 +1,79 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Visualización de agenda" cardClass="elite-calendar" [options]="false">
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label>Seleccione tipo de usuario: </label>
+            <br>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" id="tipoUsuario1" name="tipoUsuario" class="custom-control-input"
+                value="ASISTENCIA TECNICA" [(ngModel)]="tipo" (change)="cambioTipo()">
+              <label class="custom-control-label" for="tipoUsuario1">Asistente T&eacute;cnico</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" id="tipoUsuario2" name="tipoUsuario" class="custom-control-input" value="MENTORIA"
+                [(ngModel)]="tipo" (change)="cambioTipo()">
+              <label class="custom-control-label" for="tipoUsuario2">Mentor</label>
+            </div>
+            <!--select [(ngModel)]="id_persona" (change)="getAgendamientoPersona()"
+              class="form-control" id="AsistenteTecnico" *ngIf="tipo == 'ASISTENCIA TECNICA'">
+              <option *ngFor="let asistente of asistentesTecnicos" [ngValue]="asistente.id_persona">
+                {{asistente.apellido + ' ' + asistente.nombre}}
+              </option>
+            </select-->
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <div class="form-group">
+            <!--div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" id="tipoUsuario2" name="tipoUsuario" class="custom-control-input" value="MENTORIA" [(ngModel)]="tipo" (change)="cambioTipo()">
+              <label class="custom-control-label" for="tipoUsuario2">Mentor</label>
+            </div>
+            <select [(ngModel)]="id_persona" (change)="getAgendamientoPersona()"
+              class="form-control" id="mentor" *ngIf="tipo == 'MENTORIA'">
+              <option *ngFor="let mentor of mentores" [ngValue]="mentor.id_persona">
+                {{mentor.apellido + ' ' + mentor.nombre}}
+              </option>
+            </select-->
+            <ng-select [ngClass]="'ng-select'" placeholder="Selecciona" [options]="listaPersonas"
+              [(ngModel)]="id_persona" [allowClear]="true" filterPlaceholder="Buscar por nombre"
+              (selected)="getAgendamientoPersona($event);">
+              <!--ng-template #optionTemplate let-option="option">
+                <div class="famfamfam-flags {{option?.value.toLowerCase()}}"></div>
+                {{option?.label}}
+              </ng-template-->
+            </ng-select>
+          </div>
+        </div>
+      </div>
+      <div class="app" *ngIf="!notSupported">
+        <div class="app-calendar" *ngIf="calendarVisible">
+          <full-calendar #calendar defaultView="dayGridMonth" [header]="{
+              left: 'prev,next today',
+              center: 'title',
+              right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+            }" locale="es" [plugins]="calendarPlugins" [weekends]="calendarWeekends" [allDaySlot]="allDaySlot"
+            [events]="calendarEvents" (dateClick)="handleDateClick($event)" (eventClick)="handleEventClick($event)"
+            (eventRender)="eventRender($event)"></full-calendar>
+        </div>
+      </div>
+      <div class="col-sm-12 text-center" *ngIf="notSupported">
+        <div class="alert alert-danger"><code>css-animator</code> does not support in IE.</div>
+      </div>
+    </app-card>
+  </div>
+</div>
+
+<div *ngIf="agendaSeleccionada">
+  <div class="q-view" [ngClass]="agendaSeleccionada ? 'active' : ''">
+    <div class="overlay" (click)="agendaSeleccionada = null;"></div>
+    <div class="content">
+      <app-reunion [agendaSeleccionada]="agendaSeleccionada" [editable]="editable"
+        (cancelar)="agendaSeleccionada = null;" [codFormulario]="codFormulario">
+      </app-reunion>
+    </div>
+  </div>
+  <!--app-reunion [agendaSeleccionada]="agendaSeleccionada" (cancelar)="agendaSeleccionada = null" [codFormulario]="codFormulario" vista="2">
+  </app-reunion-->
+</div>

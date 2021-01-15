@@ -1,0 +1,56 @@
+<style>
+    .aut-bg-img-emprendedor{
+        background-image: url(images/FCO_9101.jpg);
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+    }
+    .aut-bg-img-mentor{
+        background-image: url(images/banner/Mentores.png);
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+    }
+</style>
+<div class="auth-wrapper align-items-stretch aut-bg-img aut-bg-img-emprendedor">
+  <div class="flex-grow-1">
+    <div class="h-100 d-md-flex align-items-center auth-side-img">
+      <div class="col-sm-10 auth-content w-auto">
+        <div class="p-3 mb-2 bg-primary text-dark rounded">
+
+          <h1 class="text-light">¡Bienvenido/a a la plataforma del Centro de Emprendimiento de Guayaquil!</h1>
+          <h4 class="text-white font-weight-normal"> Inicia sesión para comenzar tu ruta épica 
+            <i class="fas fa-sign-in-alt"></i>
+            <br /></h4> 
+        </div>
+       
+      </div>
+    </div>
+    <div class="auth-side-form">
+      <div class=" auth-content">
+        <img src="images/logo_ce2.png" alt="" class="img-fluid">
+       
+        <br>
+        <h3 class="mb-4 f-w-400"></h3>
+        <div class="input-group mb-3">
+          <input type="email" class="form-control" placeholder="Usuario" [(ngModel)]="user.usuario">
+        </div>
+        <div class="input-group mb-4">
+          <input type="password" class="form-control" placeholder="Contraseña" [(ngModel)]="user.password">
+        </div>
+        <a class="btn btn-block text-white btn-primary mb-0 fas fa-sign-in-alt "   
+        (click)="login()">Ingresar</a>
+        <div class="text-center">
+          <div class="saprator my-4"><span>-</span></div>
+          <p class="mb-2 text-muted">¿No tienes cuenta? <a [href]="registro"
+              class="f-w-400">Regístrate</a></p>
+              <p class="mb-2 text-muted">
+                <a 
+                  (click)="olvidarClave()"
+                  class="f-w-400">¿Olvidaste tu contraseña?</a>
+              </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

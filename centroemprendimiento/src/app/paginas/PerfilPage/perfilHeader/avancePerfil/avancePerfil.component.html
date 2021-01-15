@@ -1,0 +1,10 @@
+<ng-template #htmlTooltip><em>Completa tu perfil </em> <a href="paginas/perfil">aquí. </a></ng-template>
+<div [ngbTooltip]="htmlTooltip" [closeDelay]="1000">
+  <p class="m-b-10 negrita">
+    Completa tu perfil
+    <span class="float-right" [innerText]="persona.completado + '/'+ persona.total"></span>
+  </p>
+  <ngb-progressbar type="info" [value]="persona.avance" height="20px" [striped]="true" [animated]="true">
+    <span class="barraText" [innerText]="persona.avance + '%'">50%</span>
+  </ngb-progressbar>
+</div>

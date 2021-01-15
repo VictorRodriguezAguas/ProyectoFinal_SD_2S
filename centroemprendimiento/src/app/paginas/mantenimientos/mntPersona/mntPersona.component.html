@@ -1,0 +1,52 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card [hidHeader]="true" cardClass="user-profile-list" [options]="false">
+      <div class="row align-items-center m-l-0">
+        <div class="col-sm-6"></div>
+        <div class="col-sm-6 text-right">
+          <button class="btn btn-success btn-sm btn-round has-ripple" (click)="nuevo()"><i
+              class="feather icon-plus"></i> Nuevo
+          </button>
+        </div>
+      </div>
+      <div class="dt-responsive table-responsive">
+        <table datatable class="row-border hover" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>Identificacion</th>
+              <th>Direccion</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of lista">
+              <td>{{ item.id }}</td>
+              <td>{{ item.nombre }}</td>
+              <td>{{ item.apellido }}</td>
+              <td>{{ item.identificacion }}</td>
+              <td>{{ item.direccion }}</td>
+              <td>
+                <span class="badge "
+                  [ngClass]="{'badge-success': item.estado == 'A',
+                                  'badge-danger': item.estado == 'I'}">{{item.estado == 'A'?'Activo' : 'Inactivo'}}</span>
+                <div class="overlay-edit">
+                  <button type="button" class="btn btn-icon btn-success" (click)="editar(item)"><i
+                      class="feather icon-check-circle"></i></button>
+                  <button type="button" class="btn btn-icon btn-danger" (click)="eliminar(item)"><i
+                      class="feather icon-trash-2"></i></button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-card>
+  </div>
+</div>
+
+<div *ngIf="registro">
+  <app-persona [registro]="registro" (grabar)="grabar($event)" (cancelar)="cancelar($event)"></app-persona>
+</div>

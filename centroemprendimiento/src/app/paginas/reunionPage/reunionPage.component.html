@@ -1,0 +1,6 @@
+<div *ngIf="agendaSeleccionada">
+  <app-reunion [agendaSeleccionada]="agendaSeleccionada" (cancelar)="goBack();" [codFormulario]="formulario"
+    [hideAsignarActividad]="true" [id_rubrica]="id_rubrica" vista="2" [mostrarCalificacion]="mostrarCalificacion"
+    [editable]="editable">
+  </app-reunion>
+</div>

@@ -1,0 +1,116 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of UsuarioBO
+ *
+ * @author ernesto.ruales
+ */
+require_once '../bo/BO.php';
+require_once '../dao/UsuarioDAO.php';
+require_once '../util/General.php';
+require_once '../util/Mail.php';
+require_once '../bo/ArchivosBO.php';
+require_once '../dao/ConsultasDAO.php';
+
+class UsuarioBO extends BO {
+
+    //put your code here
+    public function getUsuarioxUsuario() {
+        $respuesta = General::validarParametros($_POST, ["usuario"]);
+        if (!is_null($respuesta)) {
+            return $respuesta;
+        }
+        $respuesta = new stdClass();
+        try {
+            $user = $_POST["usuario"];
+            $usuarioDAO = new UsuarioDAO();
+            $this->conectar();
+            $usuarioDAO->setConexion($this->conexion);
+
+            $data = $usuarioDAO->getUsuarioLogin($user, "");
+
+            if (is_null($data)) {
+                $data = $usuarioDAO->getUsuarioXCorreo($user);
+                if (is_null($data)) {
+                    return General::setRespuesta("2", "Usuario no existe", null);
+                }
+            }
+            $data->password = "";
+            $data->password2 = "";
+            return General::setRespuesta("1", "Usuario existe", $data);
+        } finally {
+            $this->cerrarConexion();
+        }
+    }
+
+    public function grabarFotoPerfil() {
+        try {
+            $usuarioDAO = new UsuarioDAO();
+            $consultaDAO = new ConsultasDAO();
+            $this->conectar();
+            $usuarioDAO->setConexion($this->conexion);
+            $consultaDAO->setConexion($this->conexion);
+            if (isset($_FILES['fotoPerfil'])) {
+                $file = $_FILES['fotoPerfil'];
+                if (!is_null($file)) {
+                    $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+                    $nameImage = "foto_perfil_" . $this->user->id . "." . $ext;
+                    $mensaje = ArchivosBO::guardarArchivo($file['tmp_name'], $nameImage);
+                    if ($mensaje != 'OK')
+                        return General::setRespuesta("0", $mensaje, $this->user);
+                    $this->user->foto = $nameImage;
+                }
+            }
+            $url = $consultaDAO->getParamSystem("RUTA_ARCHIVOS_URL");
+            $usuarioDAO->actualizarFotoPerfil($this->user);
+            $this->user->foto = str_replace("'", "", $this->user->foto);
+            $this->user->url_foto = $url . $this->user->foto;
+
+            return General::setRespuesta("1", "Se grabo con éxito", $this->user);
+        } finally {
+            $this->cerrarConexion();
+        }
+    }
+
+    public function getUsuariosEpico() {
+        try {
+            $usuarioDAO = new UsuarioDAO();
+            $this->conectar();
+            $usuarioDAO->setConexion($this->conexion);
+            $data = $usuarioDAO->getUsuariosEpico();
+            return General::setRespuesta("1", "Consulta exitosa", $data);
+        } finally {
+            $this->cerrarConexion();
+        }
+    }
+
+    public function getUsuario() {
+        $respuesta = General::validarParametros($_POST, ["id_usuario"]);
+        if (!is_null($respuesta)) {
+            return $respuesta;
+        }
+        try {
+            $usuarioDAO = new UsuarioDAO();
+            $this->conectar();
+            $usuarioDAO->setConexion($this->conexion);
+
+            $data = $usuarioDAO->getUsuario($_POST["id_usuario"]);
+
+            if (is_null($data)) {
+                return General::setRespuesta("2", "Usuario no existe", null);
+            }
+            $data->password = "";
+            $data->password2 = "";
+            return General::setRespuesta("1", "Usuario existe", $data);
+        } finally {
+            $this->cerrarConexion();
+        }
+    }
+
+}

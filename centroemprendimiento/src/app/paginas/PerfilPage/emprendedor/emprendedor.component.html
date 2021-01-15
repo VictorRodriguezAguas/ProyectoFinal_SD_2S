@@ -1,0 +1,197 @@
+<app-perfilHeader id="paso1" [persona]="persona" *ngIf="persona">
+  <ul class="nav nav-tabs profile-tabs nav-fill app-option-perfil" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link text-reset" [ngClass]="{'active': this.activeTab === 'home'}" (click)="this.activeTab = 'home'"
+        id="home-tab" data-toggle="tab" href="javascript:" role="tab" aria-controls="home" aria-selected="true"><i
+          class="feather icon-home mr-2"></i>Home</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link text-reset" [ngClass]="{'active': this.activeTab === 'profile'}"
+        (click)="this.activeTab = 'profile'" id="profile-tab" data-toggle="tab" href="javascript:" role="tab"
+        aria-controls="profile" aria-selected="false"><i class="feather icon-user mr-2"></i>Emprendedor</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link text-reset" [ngClass]="{'active': this.activeTab === 'contact'}"
+        (click)="this.activeTab = 'contact'" id="contact-tab" data-toggle="tab" href="javascript:" role="tab"
+        aria-controls="contact" aria-selected="false"><i class="feather icon-phone mr-2"></i>Red de
+        emprendedores</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link text-reset" [ngClass]="{'active': this.activeTab === 'gallery'}"
+        (click)="this.activeTab = 'gallery';" id="gallery-tab" data-toggle="tab" href="javascript:" role="tab"
+        aria-controls="gallery" aria-selected="false"><i class="feather icon-image mr-2"></i>Agenda</a>
+    </li>
+  </ul>
+  <div class="app-seccion-perfil">
+    <div class="row">
+      <div class="col-md-6">
+        <p class="m-b-10 negrita">
+          Te encuentras en la etapa {{etapaText}}
+        </p>
+        <bar-rating [(rate)]="etapa" [max]="etapas" [theme]="'square'" [readOnly]="true"></bar-rating>
+      </div>
+      <div class="col-md-6">
+        <div class="media">
+          <i class="feather icon-map-pin mr-2 mt-1 f-18"></i>
+          <div class="media-body">
+            <p class="mb-0 text-muted" [innerText]="persona.provincia" *ngIf="persona.provincia"></p>
+            <p class="mb-0 text-muted" [innerText]="persona.ciudad" *ngIf="persona.ciudad"></p>
+            <p class="mb-0 text-muted" [innerText]="persona.direccion" *ngIf="persona.direccion"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <p class="m-b-10 negrita">
+          Actividades completadas:
+          <span class="float-right" [innerText]="resumen.completadas + '/'+ resumen.total"></span>
+        </p>
+        <ngb-progressbar type="info" [value]="resumen.porAvance" height="20px" [striped]="true" [animated]="true">
+          <span class="barraText" [innerText]="resumen.porAvance + '%'">50%</span>
+        </ngb-progressbar>
+        <div class="clearfix"></div>
+      </div>
+      <div class="col-md-6">
+        <app-avancePerfil [persona]="persona"></app-avancePerfil>
+      </div>
+    </div>
+  </div>
+</app-perfilHeader>
+<div class="row">
+  <div class="col-xl-3 col-md-6">
+    <app-card [hidHeader]="true" cardClass="statustic-progress-card">
+      <h5 class="mb-3" >Actividades completadas</h5>
+      <app-alert type="success" dismiss=true > Tip: ¡Genial, Sigue así!  Estas actividades estan marcadas de color verde con un visto.</app-alert>
+   
+      <div class="row align-items-center">
+        <div class="col">
+         
+          <label class="badge badge-light-success">{{resumen.porAvance}}% <i class="m-l-10 feather icon-arrow-up"></i></label>
+        </div>
+        <div class="col text-right">
+          <h6 >¡Tienes {{resumen.completadas}} / {{resumen.total}} actividades completadas! </h6>
+        </div>
+      </div>
+      <div class="m-t-5">
+        <ngb-progressbar type="success" [value]="resumen.porAvance" [striped]="true" [animated]="true"></ngb-progressbar>
+      </div>
+    </app-card>
+  </div>
+  <div class="col-xl-3 col-md-6"> 
+    <app-card [hidHeader]="true" cardClass="statustic-progress-card">
+      <h5 class="mb-3">Talleres</h5>
+      <app-alert type="primary" dismiss=true >Tip: Se encuentran en la sección de actividades dentro de talleres con un icono azul. ¡Te esperamos! </app-alert>
+      <div class="row align-items-center">
+        <div class="col">
+          <label class="badge badge-light-primary">{{resumen.talleresAvance}}% <i class="m-l-10 feather icon-arrow-up"></i></label>
+        </div>
+        <div class="col text-right">
+          <h6 class="">¡Tienes {{resumen.tallesHabilitados}} / {{resumen.tallesTotal}} talleres disponibles para registrarte!</h6>
+        </div>
+      </div>
+      <div class="m-t-5">
+        <ngb-progressbar type="primary" [value]="resumen.talleresAvance" [striped]="true" [animated]="true"></ngb-progressbar>
+      </div>
+    </app-card>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <app-card [hidHeader]="true" cardClass="statustic-progress-card">
+      <h5 class="mb-3">Actividades inhabilitadas</h5>
+      <app-alert type="secondary" dismiss=true  >Tip: Estas actividades estan marcadas de color gris. ¡Completa la actividad anterior para desbloquear la siguiente! </app-alert>
+      <div class="row align-items-center">
+        <div class="col">
+          <label class="badge" 
+            [ngClass]="{'badge-light-danger': resumen.actividadesInhabilitadasAvance >= 50 ,
+                        'badge-light-warning': resumen.actividadesInhabilitadasAvance < 50 && resumen.actividadesInhabilitadasAvance > 30,
+                        'badge-light-success': resumen.actividadesInhabilitadasAvance < 20 }">
+            {{resumen.actividadesInhabilitadasAvance}}% 
+            <i class="m-l-10 feather icon-arrow-up"></i>
+          </label>
+        </div>
+        <div class="col text-right">
+          <h6 class="">¡Tienes {{resumen.actividadesInhabilitadas}} actividades inhabilitadas! </h6>
+        </div>
+      </div>
+      <div class="m-t-5">
+        <ngb-progressbar type="danger" [value]="resumen.actividadesInhabilitadasAvance" [striped]="true" [animated]="true"></ngb-progressbar>
+      </div>
+    </app-card>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <app-card [hidHeader]="true" cardClass="statustic-progress-card">
+      <h5 class="mb-3">Actividades por completar </h5>
+      <app-alert type="warning" dismiss=true  >Tip: ¡Que bien! Las actividades de color amarillo son las que puedes completar en este momento. </app-alert>
+      <div class="row align-items-center">
+        <div class="col">
+          <label class="badge badge-light-warning"
+          [ngClass]="{'badge-light-danger': resumen.actividadesHabilitadasAvance < 20 ,
+                        'badge-light-warning': resumen.actividadesHabilitadasAvance > 20 && resumen.actividadesHabilitadasAvance < 50,
+                        'badge-light-info': resumen.actividadesHabilitadasAvance > 50 && resumen.actividadesHabilitadasAvance < 90,
+                        'badge-light-success': resumen.actividadesHabilitadasAvance > 90 }"
+          >{{resumen.actividadesHabilitadasAvance}}% <i class="m-l-10 feather icon-arrow-up"></i></label>
+        </div>
+        <div class="col text-right">
+          <h6 class="" >¡Tienes {{resumen.actividadesHabilitadas}} actividades habilitadas!</h6>
+        </div>
+      </div>
+      <div class="m-t-5">
+        <ngb-progressbar type="warning" [value]="resumen.actividadesHabilitadasAvance" [striped]="true" [animated]="true"></ngb-progressbar>
+      </div>
+    </app-card>
+  </div>
+<br>
+<!-- profile body start -->
+<div class="row" *ngIf="persona">
+  <div class="col-md-8 order-md-2">
+    <div class="tab-content" id="myTabContent">
+
+      <div class="tab-pane fade" [ngClass]="{'show active': this.activeTab === 'home'}" id="home" role="tabpanel"
+        aria-labelledby="home-tab">
+        <app-etapa *ngFor="let programa of listaProgramasInscritos" [programa_selecionada]="programa" columnas="2"></app-etapa>
+      </div>
+
+      <div class="tab-pane fade" [ngClass]="{'show active': this.activeTab === 'profile'}" id="profile" role="tabpanel"
+        aria-labelledby="profile-tab">
+        <div class="row">
+          <div class="col-12">
+            <app-perfil [persona]="persona" [emprendimiento]="emprendimiento"></app-perfil>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane fade" [ngClass]="{'show active': this.activeTab === 'contact'}" id="contact" role="tabpanel"
+        aria-labelledby="contact-tab">
+        <app-redEmprendedores></app-redEmprendedores>
+      </div>
+
+      <div class="tab-pane fade" [ngClass]="{'show active': this.activeTab === 'gallery'}" id="gallery" role="tabpanel"
+        aria-labelledby="gallery-tab">
+        <app-calendario [persona]="persona"></app-calendario>
+      </div>
+    </div>
+  </div>
+  
+  <div id="step1" class="col-md-4 order-md-1">
+    <app-card [hidHeader]="true" cardClass="tab-card">
+      <ngb-tabset type="pills" id="navigateID">
+        <ngb-tab title="Talleres" (click)="consultarTalleres()">
+          <ng-template ngbTabContent>
+            <div *ngIf="talleres">
+              <app-eventos [calendarEvents]="talleres" (clickEvent)="clickEvent($event)"></app-eventos>
+            </div>
+            <div *ngIf="!talleres">
+              No hay talleres configurados
+            </div>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab title="Eventos" class="mb-3">
+          <ng-template ngbTabContent>
+            <app-eventos></app-eventos>
+          </ng-template>
+        </ngb-tab>
+      </ngb-tabset>
+    </app-card>
+  </div>
+</div>
+<!-- profile body end -->

@@ -1,0 +1,311 @@
+<div class="auth-wrapper align-items-stretch aut-bg-img aut-bg-img-emprendedor" id="page_persona">
+  <div class="flex-grow-1">
+    <div class="auth-side-form">
+      <div class=" auth-content">
+        <form id="form_datos" novalidate [formGroup]="formularioRegistro">
+          <img src="images/logo_ce2.png" alt="" class="img-fluid mb-4 d-block">
+          <br>
+          <!--div data-bind="visible: tipo_registro()=='EMPRENDEDOR'">
+            <label for="direccion" style="font-size: 20px; text-align: center; font-weight: bold;">Cuéntanos ¿Qué
+              necesitas?, !Queremos ayudarte!</label>
+            <div data-bind="foreach: catalogo.listaInteresCentroEmprendimiento">
+              <label class="custom-control custom-radio">
+                <input type="radio" name="radio_interes" class="custom-control-input"
+                  data-bind="attr: {id: 'radio_interes_' + id}, value: id, checked: $parent.persona.id_interes_centro_emprendimiento, event: {change: $parent.selectInteres}">
+                <span class="custom-control-label" data-bind="attr: {for: 'radio_interes_' + id}, text: nombre"></span>
+              </label>
+            </div>
+          </div-->
+
+          <div>
+            <div class="text-center">
+              <div class="saprator my-4"><span>Regístrate</span>
+              </div>
+            </div>
+
+            <div class="form-group fill mb-3">
+              <label class="floating-label" for="tipo_identificacion">Tipo de documento:</label>
+              <select class="form-control" formControlName="tipo_identificacion" name="tipo_identificacion"
+                [(ngModel)]="persona.tipo_identificacion">
+                <option value="C">Cédula</option>
+                <option value="P">Pasaporte</option>
+              </select>
+            </div>
+            <div class="form-group fill mb-3" data-bind="visible: persona.tipo_identificacion() === 'R'">
+              <label class="floating-label" for="identificacion">RUC:</label>
+              <input type="text" class="form-control" id="identificacion" formControlName="identificacion"
+                name="identificacion" [(ngModel)]="persona.identificacion"
+                data-bind="value: persona.identificacion, event:{blur: consultaPersona} " ruc='true' required
+                placeholder="Ruc">
+            </div>
+            <div class="form-group fill mb-3">
+              <label class="floating-label" for="nombre">Nombres completos:</label>
+              <input type="text" class="form-control" id="nombre" formControlName="nombre" name="nombre"
+                [(ngModel)]="persona.nombre" placeholder="Nombres" required>
+            </div>
+            <div class="form-group fill mb-3">
+              <label class="floating-label" for="apellido">Apellidos completos:</label>
+              <input type="text" class="form-control" id="apellido" formControlName="apellido" name="apellido"
+                [(ngModel)]="persona.apellido" placeholder="Apellidos" required>
+            </div>
+            <div class="form-group fill mb-3">
+              <label class="floating-label" for="genero">Género:</label>
+              <select class="form-control" name="genero" required formControlName="genero"
+                [(ngModel)]="persona.id_genero" placeholder="Seleccione" data-bind="options: catalogo.listaGenero,
+                              optionsText: 'nombre',
+                              optionsValue: 'id',
+                              value: persona.id_genero,
+                              optionsCaption: 'Seleccione'">
+                <option></option>
+              </select>
+            </div>
+            <div class="form-group fill mb-3">
+              <label class="floating-label" for="fecha_nacimiento">Fecha de nacimiento:</label>
+              <input type="date" class="form-control" formControlName="fecha_nacimiento" name="fecha_nacimiento"
+                validaredadmin="18" msmvalidador msmvalidador2 placeholder="dd/mm/yyyy" [(ngModel)]="persona.fecha_nacimiento"
+                edadMin="18" edadMax="100">
+              <label *ngIf="formularioRegistro.controls.fecha_nacimiento.errors && (formularioRegistro.controls.fecha_nacimiento.dirty || formularioRegistro.controls.dirty)"
+                class="error jquery-validation-error small form-text invalid-feedback"
+                [innerText]="formularioRegistro.controls.fecha_nacimiento.errors.errorMessage"></label>
+            </div>
+            <div class="form-group fill mb-3">
+              <label class="floating-label" for="telefono">Teléfono celular:</label>
+              <input type="number" class="form-control" formControlName="telefono" name="telefono"
+                [(ngModel)]="persona.telefono" placeholder="Teléfono" maxlength="10" minlength="10" required>
+            </div>
+            <div class="form-group fill mb-3" data-bind="visible: tipo_registro()=='MENTOR'">
+              <label class="floating-label" for="telefono">Teléfono fijo:</label>
+              <input type="number" class="form-control" formControlName="telefono_fijo" name="telefono_fijo"
+                [(ngModel)]="persona.telefono_fijo" placeholder="telefono_fijo" maxlength="10" minlength="7">
+            </div>
+            <div class="form-group fill mb-3">
+              <label class="floating-label" for="email">Dirección de correo electrónico:</label>
+              <input type="email" class="form-control" formControlName="email" name="email" placeholder="email"
+                [(ngModel)]="persona.email" data-bind="value: persona.email, event: {'blur': consultaUsuario}"
+                vmail="true">
+            </div>
+
+            <div class="form-group fill mb-3">
+              <label class="floating-label" for="provincia">Provincia:</label>
+              <select class="form-control" name="provincia" required placeholder="Provincia" formControlName="provincia"
+                [(ngModel)]="persona.id_provincia" data-bind="options: catalogo.listaProvincia,
+                              optionsText: 'nombre',
+                              optionsValue: 'id',
+                              value: persona.id_provincia,
+                              optionsCaption: 'Seleccione',
+                              event:{'change': function(){catalogo.getUbicaciones(persona.id_provincia())}} ">
+              </select>
+            </div>
+
+            <div class="form-group fill mb-3">
+              <label class="floating-label" for="ciudad">Ciudad de residencia:</label>
+              <select class="form-control" name="ciudad" required [(ngModel)]="persona.id_ciudad" placeholder="Ciudad"
+                formControlName="ciudad" data-bind="options: catalogo.listaCiudad,
+                              optionsText: 'nombre',
+                              optionsValue: 'id',
+                              value: persona.id_ciudad,
+                              optionsCaption: 'Seleccione'">
+              </select>
+            </div>
+            <div class="form-group fill mb-3">
+              <label class="floating-label" for="nivel_academico">Nivel académico:</label>
+              <select class="form-control" name="nivel_academico" required placeholder="Seleccion"
+                formControlName="nivel_academico" [(ngModel)]="persona.id_nivel_academico" data-bind="options: catalogo.listaNivelAcademico,
+                              optionsText: 'nombre',
+                              optionsValue: 'id',
+                              value: persona.id_nivel_academico,
+                              optionsCaption: 'Seleccione'">
+              </select>
+            </div>
+
+            <div class="form-group fill mb-3">
+              <label class="floating-label" for="situacion_laboral">Situación laboral:</label>
+              <select class="form-control" name="situacion_laboral" [(ngModel)]="persona.id_situacion_laboral" required
+                formControlName="situacion_laboral" placeholder="Seleccion" data-bind="options: catalogo.listaSituacionLaboral,
+                              optionsText: 'nombre',
+                              optionsValue: 'id',
+                              value: persona.id_situacion_laboral,
+                              optionsCaption: 'Seleccione'">
+              </select>
+            </div>
+            <div class="form-group fill mb-3">
+              <label class="floating-label" for="direccion">Dirección de domicilio:</label>
+              <input type="text" class="form-control" name="direccion" placeholder="dirección"
+                formControlName="direccion" [(ngModel)]="persona.direccion" data-bind="value: persona.direccion"
+                required>
+            </div>
+            <!--div class="form-group fill mb-3">
+              <label class="floating-label" for="direccion">Mapa de domicilio:</label>
+            </div>
+            <div class="map-example">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div id="map"></div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group fill mb-3">
+              <label class="floating-label" id="latitudStrLbl"></label>
+              <input type="text" class="form-control" name="latitud" id="latitudStr" data-bind="value: persona.latitud"
+                disabled>
+            </div>
+            <div class="form-group fill mb-3">
+              <input type="text" class="form-control" name="longitud" id="longitudStr"
+                data-bind="value: persona.longitud" disabled>
+            </div-->
+
+
+            <div class="text-center">
+              <div class="saprator my-4"><span><img src="images/epico-icon.png" style="width: 60px;"></span></div>
+            </div>
+
+            <div class="form-group fill mb-3">
+              <label class="floating-label" for="nombre_emprendimiento">Nombre del emprendimiento:</label>
+              <input type="text" class="form-control" name="nombre_emprendimiento" placeholder="Emprendimiento"
+                [(ngModel)]="emprendimiento.nombre" formControlName="nombre_emprendimiento"
+                data-bind="value: emprendimiento.nombre, attr: {disabled: emprendimiento.id_emprendimiento()!=''}"
+                required>
+            </div>
+
+
+            <label for="tipo_emprendimiento" style="color: #4680ff;">¿En qué actividad económica deseas emprender o
+              estás emprendiendo?</label>
+            <select class="form-control" name="tipo_emprendimiento" required formControlName="tipo_emprendimiento"
+              [(ngModel)]="emprendimiento.id_tipo_emprendimiento" placeholder="Seleccion" data-bind="options: catalogo.listaTipoEmprendimiento,
+                              optionsText: 'nombre',
+                              optionsValue: 'id',
+                              value: emprendimiento.id_tipo_emprendimiento,
+                              optionsCaption: 'Seleccione'">
+            </select>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-12">
+              <div>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">
+                      <input type="checkbox" aria-label="Aceptar uso de datos" name="aceptar_uso_datos"
+                        [(ngModel)]="persona.aceptar_uso_datos" formControlName="aceptar_uso_datos"
+                        data-bind="checked: persona.aceptar_uso_datos">
+                    </div>
+                  </div>
+                  <label class="custom-select alert alert-primary">Acepto uso de datos
+                    <a onclick="$('#terminos_condiciones').show();$('#ocultarUsoDatos').show();$('#verUsoDatos').hide();"
+                      style="color: blue;font-style: italic;font-size: 13px;text-decoration: underline;"
+                      id='verUsoDatos'>ver</a>
+                    <a onclick="$('#terminos_condiciones').hide();$('#ocultarUsoDatos').hide();$('#verUsoDatos').show();"
+                      style="color: blue;font-style: italic;font-size: 13px;text-decoration: underline; display: none;"
+                      id="ocultarUsoDatos">ocultar</a>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br><br>
+          <div class="row">
+            <div class="card" id="terminos_condiciones" style="display:none;">
+              <div class="card-header">
+                <h5>AUTORIZACIÓN DE TRATAMIENTO DE INFORMACIÓN PERSONAL</h5>
+                <div class="card-header-right">
+                  <div class="btn-group card-option">
+                    <button type="button" class="btn dropdown-toggle has-ripple"
+                      onclick="$('#terminos_condiciones').hide();$('#ocultarUsoDatos2').hide();$('#verUsoDatos2').show();">
+                      X
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="">
+                <div class="alert alert-primary" role="alert" style="text-align: justify;">
+                  <p>
+                    La autorización proporcionada en este formulario faculta a la
+                    <strong>EMPRESA PÚBLICA MUNICIPAL PARA LA GESTIÓN DE LA INNOVACIÓN Y COMPETITIVIDAD EP</strong>
+                    (ÉPICO)
+                    para utilizar los datos recopilados para fines
+                    que incluye: invitación a eventos y participación en la comunidad del Centro de Emprendimiento,
+                    invitación para interactuar con otros miembros aliados de ÉPICO en la plataforma en línea ,
+                    participación en redes sociales (grupos de Whatsapp inclusive), listas de distribución y página web.
+                  </p>
+                  <p>
+                    El propietario de los datos puede, en cualquier momento, solicitar que la información sea
+                    modificada, actualizada o eliminada del Centro de Emprendimiento y Bases de datos de ÉPICO,
+                    dirigiendo un correo electrónico a la dirección <a
+                      href="mailto:mesadeservicio@epico.gob.ec">mesadeservicio@epico.gob.ec</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">
+                      <input type="checkbox" aria-label="Acepto el compromiso de participación"
+                        [(ngModel)]="persona.aceptar_compromiso_participante" name="aceptar_compromiso_participante"
+                        formControlName="aceptar_compromiso_participante"
+                        data-bind="checked: persona.aceptar_compromiso_participante">
+                    </div>
+                  </div>
+                  <label class="custom-select alert alert-primary">Acepto el compromiso de participación
+                    <a onclick="$('#terminos_condiciones2').show();$('#ocultarUsoDatos2').show();$('#verUsoDatos2').hide();"
+                      style="color: blue;font-style: italic;font-size: 13px;text-decoration: underline;"
+                      id='verUsoDatos2'>ver</a>
+                    <a onclick="$('#terminos_condiciones2').hide();$('#ocultarUsoDatos2').hide();$('#verUsoDatos2').show();"
+                      style="color: blue;font-style: italic;font-size: 13px;text-decoration: underline; display: none;"
+                      id="ocultarUsoDatos2">ocultar</a>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <br><br>
+          </div>
+          <div class="card" id="terminos_condiciones2" style="display:none;">
+            <div class="card-header">
+              <h5>COMPROMISO DE PARTICIPACIÓN</h5>
+              <div class="card-header-right">
+                <div class="btn-group card-option">
+                  <button type="button" class="btn dropdown-toggle has-ripple"
+                    onclick="$('#terminos_condiciones2').hide();$('#ocultarUsoDatos').hide();$('#verUsoDatos').show();">
+                    X
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="">
+              <div class="alert alert-primary" role="alert" style="text-align: justify;">
+                <p>
+                  En mi condición de participante de los programas de fortalecimiento del emprendimiento, ejecutado por
+                  la Empresa Pública Municipal para la Gestión de la Innovación y la Competitividad EP, en el marco de
+                  las actividades del Centro de Emprendimiento de Guayaquil, declaro lo siguiente:
+                </p>
+                <ol style="font-size: 13px">
+                  <li>Que tengo la capacidad legal para comprometerme y participar en los programas que brinda la
+                    Empresa Pública Municipal para la Gestión de la Innovación y la Competitividad EP.</li>
+                  <li>Que activa y positivamente participaré en las sesiones presenciales del programa, con el objetivo
+                    de establecer estrategias que ayudarán al crecimiento de mi emprendimiento.</li>
+                  <li>Que participaré en por lo menos una de las encuestas y entrevistas que permitan recolectar datos
+                    sobre mi emprendimiento.</li>
+                  <li>Que autorizo a la Empresa Pública Municipal para la Gestión de la Innovación y la Competitividad,
+                    EP a utilizar con fines investigativos los datos recolectados sobre mi emprendimiento.</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <br><br>
+          </div>
+          <button class="btn btn-primary btn-block mb-4"
+            [disabled]="!(persona.aceptar_uso_datos && persona.aceptar_compromiso_participante)"
+            (click)="registrar()">Registrar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+ngb-tabset[id ^= "navigateID"]{
+    /*position: inherit;*/
+    background-color: blue;
+}
+
+ngb-tabset[id ^= "navigateID"] >ul{
+    /*position: inherit;*/
+    background-color: blue;
+}
+
+.negrita{
+    font-weight: bold;
+}
+

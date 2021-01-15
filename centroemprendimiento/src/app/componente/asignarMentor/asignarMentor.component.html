@@ -1,0 +1,155 @@
+<app-ui-modal #asignarMentoria [dialogClass]="'modal-lg'" [static]="true">
+  <div class="app-modal-header">
+    <h5 class="modal-title">Asignación de mentoría</h5>
+    <button type="button" class="close basic-close" data-dismiss="modal" aria-label="Close" (click)="_cancelar()"><span
+        aria-hidden="true">&times;</span></button>
+  </div>
+  <div class="app-modal-body">
+    <app-card cardTitle="Left Nav Wizard" [options]="false" [hidHeader]="true">
+      <aw-wizard #wizard class="arc-wizard" navBarLocation="left">
+
+        <aw-wizard-step stepTitle="Tema">
+          <div class="row">
+            <div class="col-sm-12">
+              <h5>Tema de mentoria</h5>
+              <hr>
+              <div>
+                <label class="custom-control custom-radio" *ngFor="let item of listaTemaMentoria">
+                  <input type="checkbox" class="custom-control-input" [(ngModel)]="item.selected"
+                    [ngModelOptions]="{standalone: true}" [attr.id]="'tema_mentoria' + item.id"
+                    [attr.name]="'tema_mentoria' + item.id"
+                    data-bind="attr: {id: 'tema_mentoria' + id}, value: id, checked: selected">
+                  <span class="custom-control-label" [attr.for]="'tema_mentoria' + item.id" [innerText]="item.nombre"
+                    data-bind="attr: {for: 'tema_mentoria' + id}, text: nombre"></span>
+                </label>
+              </div>
+            </div>
+            <div class="col-sm-12 centered-content">
+              <div class="btn-group mt-10">
+                <button type="button" class="btn btn-primary btn-sm" (click)="paso2()">Siguiente</button>
+              </div>
+            </div>
+          </div>
+        </aw-wizard-step>
+
+
+        <aw-wizard-step stepTitle="Mentoria">
+          <div class="row">
+            <div class="col-sm-12">
+              <h5>Asignar mentor</h5>
+              <hr>
+              <app-card cardTitle="Top Contacts" cardClass="table-card" blockClass="p-0" [hidHeader]="true">
+
+                <div class="table-responsive">
+                  <table class="table table-hover m-b-0 without-header">
+                    <thead>
+                      <tr>
+                        <th>Temática</th>
+                        <th>Mentor</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let mentoria of listaMentoria">
+                        <td [innerText]="mentoria.tema_mentoria" style="width: 10%;">
+                        </td>
+                        <td style="width: 90%;">
+                          <div class="d-inline-block align-middle" *ngIf="mentoria.nombre_mentor">
+                            <img [src]="getFoto(mentoria.mentor.url_foto)" *ngIf="mentoria.mentor" alt="user image"
+                              class="img-radius align-top m-r-15" style="width:40px;">
+                            <div class="d-inline-block">
+                              <h6 class="m-b-0" [innerText]="mentoria.nombre_mentor">Shirley Hoe</h6>
+                              <p class="m-b-0 sizeperfil"
+                                [innerText]="getTextoCorto(mentoria.mentor.descripcion_perfil)" *ngIf="mentoria.mentor">
+                                Sales
+                                executive,NY</p>
+                              <span class="badge m-r-5 badge-info" [placement]="'top'" [popoverTitle]="'Perfil'"
+                                [ngbPopover]="mentoria.mentor.descripcion_perfil" popoverClass="popoverText">Leer
+                                mas</span>
+                              <a (click)="consultarMentor(mentoria)" class="text-info cambiar ">
+                                <i class="feather icon-edit-1"></i>
+                                <span> Cambiar mentor</span>
+                              </a>
+                            </div>
+                          </div>
+                          <button type="button" class="btn btn-icon btn-outline-primary" *ngIf="!mentoria.nombre_mentor"
+                            ngbTooltip="Buscar mentor" (click)="consultarMentor(mentoria)">
+                            <i class="feather icon-search"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </app-card>
+            </div>
+            <div class="col-sm-12 centered-content">
+              <div class="btn-group mt-10">
+                <button type="button" class="btn btn-secondary btn-sm" awPreviousStep>Atrás</button>
+                <button type="button" class="btn btn-primary btn-sm" (click)="paso3()">Siguiente</button>
+              </div>
+            </div>
+          </div>
+        </aw-wizard-step>
+
+        <aw-wizard-step stepTitle="Sesiones">
+          <div class="row" *ngIf="inscripcionEtapa">
+            <div class="col-sm-12">
+              <h5>Asignar sesiones por mentor</h5>
+              <p><strong>Puede agregar máximo {{inscripcionEtapa.max_horas_mentoria}} sesiones en total</strong></p>
+              <hr>
+              <app-card cardTitle="Projects" cardClass="table-card" blockClass="p-0" [hidHeader]="true">
+                <div class="table-responsive">
+                  <table class="table table-hover mb-0">
+                    <thead>
+                      <tr>
+                        <th>Mentor</th>
+                        <th class="text-right" style="width: 25%;">Sesiones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let mentoria of listaMentoria">
+                        <td>
+                          <div class="d-inline-block align-middle">
+                            <img [src]="getFoto(mentoria.mentor.url_foto)" *ngIf="mentoria.mentor" alt="user image"
+                              class="img-radius wid-40 align-top m-r-15">
+                            <div class="d-inline-block">
+                              <h6 [innerText]="mentoria.nombre_mentor">John Deo</h6>
+                              <p class="text-muted m-b-0">
+                                <strong>Temática: </strong>
+                                {{mentoria.tema_mentoria}}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="text-right">
+                          <app-inputIncrement [value]="mentoria.cant" (getValue)="mentoria.cant = $event"
+                            [maxValue]="inscripcionEtapa.max_horas_mentoria" minValue="0"></app-inputIncrement>
+                          <!--label class="badge badge-light-danger">Low</label-->
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </app-card>
+
+            </div>
+            <div class="col-sm-12 centered-content">
+              <div class="btn-group mt-10">
+                <button type="button" class="btn btn-secondary btn-sm" awPreviousStep>Atrás</button>
+                <button type="button" class="btn btn-success btn-sm" (click)="grabarMentoria()">Finalizar</button>
+              </div>
+            </div>
+          </div>
+        </aw-wizard-step>
+
+
+      </aw-wizard>
+    </app-card>
+  </div>
+</app-ui-modal>
+
+<div *ngIf="mentoria">
+  <app-selectMentor [id_eje_mentoria]="mentoria.id_eje_mentoria" [tema_mentoria]="mentoria.tema_mentoria"
+    (selectMentor)="seleccionarMentor($event)" (cancelar)="cancelarMentor()"></app-selectMentor>
+</div>

@@ -1,0 +1,190 @@
+<?php
+
+/**
+ * Description of CatalogoBO
+ *
+ * @author Mauricio Guzman
+ */
+
+$newUrl = URL::getUrlLibreria();
+require_once '../bo/BO.php';
+require_once '../util/basedatos.php';
+require_once '../dao/TicketDAO.php';
+require_once '../util/General.php';
+
+class TicketBO extends BO {
+
+    public function getTicketTypes() {
+        //$ticket = json_decode($_POST["datos"]);
+        try {
+            $this->conectar();
+            $ticketDAO = new TicketDAO();
+            $ticketDAO->setConexion($this->conexion);
+            $data = $ticketDAO->getTicketTypes();
+            $this->cerrarConexion();
+            return General::setRespuestaOK($data);
+        } finally {
+            $this->cerrarConexion();
+        }
+    }
+
+    public function getTicketCategories() {
+        $respuesta = General::validarParametros($_POST, ["datos"]);
+        if (!is_null($respuesta)) {
+            return $respuesta;
+        }
+        $ticket = json_decode($_POST["datos"]);
+
+        try {
+            $this->conectar();
+            $ticketDAO = new TicketDAO();
+            $ticketDAO->setConexion($this->conexion);
+            $data = $ticketDAO->getTicketCategories($ticket->id);
+            $this->cerrarConexion();
+            return General::setRespuestaOK($data);
+        } finally {
+            $this->cerrarConexion();
+        }
+    }
+
+    public function getTicketSubcategories() {
+        $respuesta = General::validarParametros($_POST, ["datos"]);
+        if (!is_null($respuesta)) {
+            return $respuesta;
+        }
+        $ticket = json_decode($_POST["datos"]);
+
+        try {
+            $this->conectar();
+            $ticketDAO = new TicketDAO();
+            $ticketDAO->setConexion($this->conexion);
+            $data = $ticketDAO->getTicketSubcategories($ticket->id);
+            $this->cerrarConexion();
+            return General::setRespuestaOK($data);
+        } finally {
+            $this->cerrarConexion();
+        }
+    }
+
+
+    public function getTicketsByUser() {
+        try {
+            $this->conectar();
+            $ticketDAO = new TicketDAO();
+            $ticketDAO->setConexion($this->conexion);
+            $data = $ticketDAO->getTicketsByUser(2);
+            $this->cerrarConexion();
+            return General::setRespuestaOK($data);
+        } finally {
+            $this->cerrarConexion();
+        }
+    }
+
+
+    public function getTicketsByPerfil($usuario){
+        try {
+            $this->conectar();
+            $ticketDAO = new TicketDAO();
+            $ticketDAO->setConexion($this->conexion);
+            $data = $ticketDAO->getTicketsByPerfil($usuario);
+            $this->cerrarConexion();
+            return General::setRespuestaOK($data);
+        } finally {
+            $this->cerrarConexion();
+        }
+    }
+
+
+    public function insertarTicket() {
+        $respuesta = General::validarParametros($_POST, ["datos"]);
+        if (!is_null($respuesta)) {
+            return $respuesta;
+        }
+        $ticket = json_decode($_POST["datos"]);
+        $ticket = $this->grabarTicket($ticket);
+        return General::setRespuesta("1", "Se grabo con exito", $ticket);
+    }
+
+
+    public function grabarTicket($ticket) {
+
+        $ticketDAO = new TicketDAO();
+
+        $this->conectar();
+        try {
+            $ticketDAO->setConexion($this->conexion);
+            $ticket->id_ticket = $ticketDAO->insertarTicket($ticket);
+            return $ticket;
+        } 
+        finally {
+            $this->cerrarConexion();
+        }
+    }
+
+
+    public function updateTicketByAttended() {   
+        $respuesta = General::validarParametros($_POST, ["datos"]);
+        if (!is_null($respuesta)) {
+            return $respuesta;
+        }
+
+        $ticketDAO = new TicketDAO();
+        $ticket = json_decode($_POST["datos"]);
+
+        $this->conectar();
+        try {
+            $ticketDAO->setConexion($this->conexion);
+            if (General::tieneValor($ticket, "id_ticket")) {
+                $ticketDAO->updateTicketByAttended($ticket);
+            }
+            return General::setRespuesta("1", "Se actualizo con exito", $ticket);
+        } finally {
+            $this->cerrarConexion();
+        }
+    }
+
+
+    public function doneTicketByAttended() {   
+        $respuesta = General::validarParametros($_POST, ["datos"]);
+        if (!is_null($respuesta)) {
+            return $respuesta;
+        }
+
+        $ticketDAO = new TicketDAO();
+        $ticket = json_decode($_POST["datos"]);
+        
+        $this->conectar();
+        try {
+            $ticketDAO->setConexion($this->conexion);
+            if (General::tieneValor($ticket, "id_ticket")) {
+                $ticketDAO->doneTicketByAttended($ticket);
+            }
+            return General::setRespuesta("1", "Se finalizo con exito", $ticket);
+        } finally {
+            $this->cerrarConexion();
+        }
+    }
+
+
+    public function deleteTicketByAttended() {   
+        $respuesta = General::validarParametros($_POST, ["datos"]);
+        if (!is_null($respuesta)) {
+            return $respuesta;
+        }
+
+        $ticketDAO = new TicketDAO();
+        $ticket = json_decode($_POST["datos"]);
+        
+        $this->conectar();
+        try {
+            $ticketDAO->setConexion($this->conexion);
+            if (General::tieneValor($ticket, "id_ticket")) {
+                $ticketDAO->deleteTicketByAttended($ticket);
+            }
+            return General::setRespuesta("1", "Se elimino con exito", $ticket);
+        } finally {
+            $this->cerrarConexion();
+        }
+    }
+
+}

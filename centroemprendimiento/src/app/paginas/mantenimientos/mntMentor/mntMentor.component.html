@@ -1,0 +1,265 @@
+<div class="row" [hidden]="mentor">
+  <div class="col-sm-12">
+    <app-card [hidHeader]="true" [options]="false">
+      <div class="col-sm-12 text-right">
+        <button class="btn btn-warning btn-sm btn-round has-ripple mr-2" (click)="descargar()">
+          <i class="fas fa-cloud-download-alt"></i>Excel
+        </button>
+        <div *ngIf="listaMentorDescarga">
+          <app-exportar [lista]="listaMentorDescarga" [hiddeButton]="true" (salir)="listaMentorDescarga = null">
+          </app-exportar>
+        </div>
+      </div>
+      <br>
+      <div class="row user-profile-list">
+        <div class="col-sm-12">
+          <div class="dt-responsive table-responsive">
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+              class="table table-striped row-border table-hover">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Temática</th>
+                  <th>estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let mentor of listaMentores">
+                  <td>
+                    <div class="d-inline-block align-middle">
+                      <img [src]="getFoto(mentor.url_foto)" (error)="pictNotLoading($event)" alt="user image"
+                        class="img-radius align-top m-r-15" style="width:40px;">
+                      <div class="d-inline-block">
+                        <h6 class="m-b-0">{{mentor.nombre + ' ' + mentor.apellido}}</h6>
+                        <p class="m-b-0">{{mentor.email}}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <ul>
+                      <li *ngFor="let item of mentor.listaEjeMentoria"
+                        [innerText]="item.id == 7 ? item.nombre + ': ' + item.valor : item.nombre"></li>
+                    </ul>
+                  </td>
+                  <td>
+                    <span class="{{getClassEstado(mentor.estado)}}" [innerText]="getNombreEstado(mentor.estado)"></span>
+                    <div class="overlay-edit">
+                      <button type="button" class="btn btn-icon btn-success" (click)="selectMentor(mentor)"><i
+                          class="feather icon-edit-1"></i></button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </app-card>
+  </div>
+</div>
+
+<div *ngIf="mentor">
+  <app-editar [persona]='mentor' [usuario]="usuario" [editablePerfil]="false" [activeTab]="activeTab"
+    (setActiveTab)="this.activeTab = $event" (salir)="cancelar()" botonSalir="true">
+
+    <div class="app-option-perfil-edit">
+      <li class="nav-item">
+        <a class="nav-link text-reset" [ngClass]="{'active': this.activeTab === 'mentor'}"
+          (click)="this.activeTab = 'mentor'" id="mp-act" data-toggle="tab" href="javascript:" role="tab"
+          aria-controls="mentor" aria-selected="true"><i class="feather icon-user mr-2"></i>Mentor</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-reset" [ngClass]="{'active': this.activeTab === 'contratos'}"
+          (click)="this.activeTab = 'contratos'" id="mp-act" data-toggle="tab" href="javascript:" role="tab"
+          aria-controls="contratos" aria-selected="true"><i class="feather icon-user mr-2"></i>Periodos</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-reset" [ngClass]="{'active': this.activeTab === 'horario'}"
+          (click)="this.activeTab = 'horario'" id="mp-act" data-toggle="tab" href="javascript:" role="tab"
+          aria-controls="horario" aria-selected="true"><i class="feather icon-user mr-2"></i>Horarios</a>
+      </li>
+    </div>
+
+
+    <div class="app-content-option-perfil">
+
+      <div class="tab-pane fade" [ngClass]="{'show active': this.activeTab === 'mentor'}" role="tabpanel"
+        aria-labelledby="mp-act">
+        <div class="row align-items-center m-l-0" *ngIf="this.activeTab === 'mentor'">
+          <div class="col-md-12">
+            <form>
+              <br>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="shadow p-3 mb-5 bg-white rounded">
+                    <div class="form-group row">
+                      <label class="col-sm-3 col-form-label font-weight-bolder">Estado:</label>
+                      <div class="col-sm-6">
+                        <select class="form-control" disabled [(ngModel)]="mentor.estado"
+                          [ngModelOptions]="{standalone: true}">
+                          <option value="A">Aprobado</option>
+                          <option value="V">Vigente</option>
+                          <option value="I">Registrado</option>
+                          <option value="R">Rechazado</option>
+                        </select>
+                        <!--span class="{{getClassEstado(mentor.estado)}}" [innerText]="getNombreEstado(mentor.estado)"></span-->
+                      </div>
+                      <div class="col-sm-3">
+                        <button class="btn btn-info btn-sm" (click)="calificarMentor()"
+                          *ngIf="mentor.estado == 'I'">Calificar</button>
+                        <button class="btn btn-warning btn-sm" (click)="verCalificacionMentor()"
+                          *ngIf="mentor.estado != 'I'">Ver calificacion</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <blockquote class="blockquote">
+                    <footer class="blockquote-footer">Breve descripción del perfil (Indicando principales competencias,
+                      capacidades, actitudes, intereses y motivaciones)</footer>
+                    <p class="mb-2" [innerText]="mentor.descripcion_perfil"></p>
+                  </blockquote>
+                  <hr>
+                </div>
+                <div class="col-md-12">
+                  <blockquote class="blockquote">
+                    <footer class="blockquote-footer">¿Qué te motiva a ser un mentor de épico?</footer>
+                    <p class="mb-2" [innerText]="mentor.descripcion_motivacion_mentor"></p>
+                  </blockquote>
+                  <hr>
+                </div>
+                <div class="col-md-12">
+                  <blockquote class="blockquote">
+                    <footer class="blockquote-footer">De acuerdo a su experiencia, ¿cómo considera que se debe construir
+                      la comunidad de mentores en Guayaquil para que sea sostenible en el tiempo?</footer>
+                    <p class="mb-2" [innerText]="mentor.opinion_red_mentores"></p>
+                  </blockquote>
+                  <hr>
+                </div>
+                <div class="col-md-12">
+                  <blockquote class="blockquote">
+                    <footer class="blockquote-footer">¿Indica con que eje de la red de mentoría te identificas para
+                      realizar la mentoría?</footer>
+                    <!--ul>
+                      <li *ngFor="let item of mentor.listaEjeMentoria"
+                        [innerText]="item.id == 7 ? item.nombre + ': ' + item.valor : item.nombre"></li>
+                    </ul-->
+                    <div>
+                      <label class="custom-control custom-radio custom-control-inline"
+                        *ngFor="let item of mentor.listaEjeMentoria">
+                        <input type="checkbox" class="custom-control-input actividadComplementaria"
+                          [(ngModel)]="item.selected" [ngModelOptions]="{standalone: true}"
+                          [attr.id]="'eje_mentoria_' + item.id" [attr.name]="'eje_mentoria_' + item.id"
+                          data-bind="attr: {id: 'eje_mentoria_' + id}, value: id, checked: selected">
+                        <span class="custom-control-label spanLista" [attr.for]="'eje_mentoria_' + item.id"
+                          [innerText]="item.nombre" data-bind="attr: {for: 'eje_mentoria_' + id}, text: nombre"></span>
+                      </label>
+                    </div>
+                  </blockquote>
+                  <hr>
+                </div>
+                <div class='col-md-6'>
+                  <div class="form-group mb-3">
+                    <label class="form-control-label">
+                      <span class="obligatorioLable">*</span>
+                      No. Máximo Horas/Semana
+                    </label>
+                    <input type="text" class="form-control" name='max_horas_semana'
+                      [(ngModel)]="mentor.max_horas_semana " required placeholder="Máximo de horas por semana">
+                  </div>
+                </div>
+                <div class='col-md-6'>
+                  <div class="form-group mb-3">
+                    <label class="form-control-label">
+                      <span class="obligatorioLable">*</span>
+                      No. Máximo Horas/Mes
+                    </label>
+                    <input type="text" class="form-control" name='max_horas_mes' [(ngModel)]="mentor.max_horas_mes"
+                      required placeholder="Máximo de horas al mes">
+                  </div>
+                </div>
+
+                <div class="col-sm-12">
+                  <app-card cardTitle="Horario registrado">
+                    <div class="table-responsive">
+                      <table class="table table-xs">
+                        <thead>
+                          <tr>
+                            <th>Día</th>
+                            <th>Hora inicio</th>
+                            <th>Hora fin</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let horario of horarioRegistro">
+                            <td [innerText]="horario.dia">Mark</td>
+                            <td [innerText]="horario.hora_inicio">Otto</td>
+                            <td [innerText]="horario.hora_fin">@mdo</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </app-card>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane fade" [ngClass]="{'show active': this.activeTab === 'contratos'}" role="tabpanel"
+        aria-labelledby="mp-act">
+        <div class="row align-items-center m-l-0">
+          <div class="col-sm-12" *ngIf="this.activeTab === 'contratos'">
+            <br>
+            <div class="row">
+              <div class="col-12" *ngIf="mentor.estado == 'A' || mentor.estado == 'V'">
+                <app-mntPeriodo [titulo]="'Periodos de mentoria'" [periodos]="mentor.periodos"
+                  (grabar)="grabarPeriodo($event)" (getPeriodos)="setPeriodos($event)"
+                  [maxHorasSemana]="mentor.max_horas_semana" [maxHorasMes]="mentor.max_horas_mes">
+                </app-mntPeriodo>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="tab-pane fade" [ngClass]="{'show active': this.activeTab === 'horario'}" role="tabpanel"
+        aria-labelledby="mp-act">
+        <div class="row align-items-center m-l-0">
+          <div class="col-sm-12" *ngIf="this.activeTab === 'horario'">
+            <br>
+            <div class="row">
+              <div class="col-12" *ngIf="mentor.estado == 'V' || mentor.estado == 'A'">
+                <app-mntHorario [titulo]="'Horario de: ' + mentor.nombre + ' ' + mentor.apellido"
+                  [horario]="mentor.horarios" (grabar)="grabarHorario($event)" (getHorarios)="setHorarios($event)">
+                </app-mntHorario>
+              </div>
+              <div *ngIf="mentor.estado != 'V'">
+                No tiene periodo vigente actual.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </app-editar>
+</div>
+
+<app-ui-modal [dialogClass]="'modal-lg'" #calificarModal>
+  <div class="app-modal-header">
+    <h5 class="modal-title">Calificar mentor</h5>
+    <button type="button" class="close basic-close" data-dismiss="modal" aria-label="Close"
+      (click)="calificarModal.hide()"><span aria-hidden="true">&times;</span></button>
+  </div>
+  <div class="app-modal-body" *ngIf="mentor">
+    <app-evaluacion [id_rubrica]="id_rubrica" [id_evaluacion]="id_evaluacion" [id_persona]="this.mentor.id_persona"
+      [id_mentor]="this.mentor.id_mentor" [mostrarCalificacion]="mostrarCalificacion" [hideHeader]="hideHeader"
+      [opciones]="opciones" (finalizarEvaluacion)="finalizarEvaluacion($event)" [hideFinalizar]="hideFinalizar"
+      [hideGrabar]="hideGrabar" (salirEvaluacion)="cancelarEvaluacion($event)">
+    </app-evaluacion>
+  </div>
+</app-ui-modal>

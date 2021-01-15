@@ -1,0 +1,50 @@
+<?php
+//error_reporting(0);
+
+date_default_timezone_set('America/Guayaquil');
+header('Content-Type: text/html; charset=utf-8');
+//Incluir la clase basedatos
+require_once('basedatos.php');
+
+$base = new basedatos;
+$base->Conectar();
+$mensaje=$base->getMensajeError();
+
+$tabla="reunion";
+$campos=array("hora_inicio");
+$tipodatos=array("s");
+$valores=array($reunion->hora_inicio_reunion);
+$campos_condicion=array("id","id_agenda");
+$campos_condicion_valor=array($reunion->id_reunion,$reunion->id_agenda);
+$tipodatos_condicion=array("i","i");
+$base->Actualizar($tabla,$campos,$tipodatos,$valores,$campos_condicion,$campos_condicion_valor,$tipodatos_condicion);
+$mensaje=$base->getMensajeError();
+$error=$base->getError();	
+
+
+$tabla="reunion";
+$campos=array("id_agenda","hora_inicio_agenda","hora_fin_agendad","fecha_agendada","hora_inicio","hora_fin","temas","acuerdos","observacion");
+$tipodatos=array("i","s","s","s","s","s","s","s","s");
+$valores=array($reunion->id_agenda,$reunion->hora_inicio_agenda,$reunion->hora_fin_agendad,$reunion->fecha_agendada,
+			   $reunion->hora_inicio_reunion,$reunion->hora_fin_reunion,$reunion->temas,$reunion->acuerdos,$reunion->observacion);
+$base->Insertar($tabla,$campos,$tipodatos,$valores);
+$mensaje=$base->getMensajeError();
+$error=$base->getError();
+					
+if($error==0){
+	$respuesta["estado"]="200";
+	$respuesta["noticias"]="Exito";
+	$respuesta["data"]="";
+	$JSON = json_encode($respuesta,JSON_UNESCAPED_UNICODE);
+	$respuesta = $JSON;			
+}	
+else{
+	$respuesta["estado"]="500";
+	$respuesta["noticias"]="Error: ".$mensaje;
+	$respuesta["data"]="";
+	$JSON = json_encode($respuesta,JSON_UNESCAPED_UNICODE);
+	$respuesta = $JSON;			
+}	
+
+$base->CerrarConexion();
+?>

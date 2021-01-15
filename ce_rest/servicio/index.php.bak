@@ -1,0 +1,93 @@
+<?php
+
+use \Psr\Http\Message\ServerRequestInterface as Request;
+use \Psr\Http\Message\ResponseInterface as Response;
+use Firebase\JWT\JWT;
+
+const KEYEPICO = "5U3Gn3gp4LrQpS34d7Gj";
+const TOKEN = "authorization";
+const ALGORITMO = "HS512";
+
+require '../vendor/autoload.php';
+
+$settings = require '../util/token/settings.php';
+$app = new \Slim\App($settings);
+require '../util/token/dependencies.php';
+require '../util/token/middleware.php';
+
+function getToken($request, $data) {
+    $issuedAt = time();
+    $notBefore = $issuedAt;
+    $expire = $notBefore + 60 * 60;
+    $serverName = $request->withUri($request->getUri(), true);
+    $token = JWT::encode([
+                'iat' => $issuedAt, // Issued at: time when the token was generated
+                //'jti'  => $tokenId,          // Json Token Id: an unique identifier for the token
+                'iss' => $serverName, // Issuer
+                'nbf' => $notBefore, // Not before
+                'exp' => $expire,
+                'dta' => $data
+                    ], KEYEPICO, ALGORITMO);
+    return $token;
+}
+
+function getUser($request) {
+    $token = $request->getHeader(TOKEN);
+    if (count($token) > 0) {
+        $token = $token[0];
+        try {
+            $data = JWT::decode($token, KEYEPICO, [ALGORITMO]);
+            return $data->dta;
+        } catch (Exception $ex) {
+            return null;
+        }
+    }
+}
+
+$app->add(function (Request $request, Response $resp, $next) use($app) {
+    $response = $next($request, $resp);
+    $token = $request->getHeader(TOKEN);
+    if (count($token) > 0 && $resp->getStatusCode() != '401') {
+        $token = $token[0];
+        try {
+            $obj = JWT::decode($token, KEYEPICO, [ALGORITMO]);
+            $token = getToken($request, $obj->dta);
+            $data = $resp->getBody();
+            $data = json_decode($data);
+            $data->token = $token;
+            $body = new \GuzzleHttp\Psr7\LazyOpenStream('php://temp', $body = GuzzleHttp\Psr7\Stream::WRITABLE_MODES);
+            $body->write(json_encode($data));
+            $response = $response->withBody($body);
+        } catch (Exception $ex) {
+            $token = "";
+        }
+        return $response
+                        ->withHeader(TOKEN, $token)
+                        ->withHeader('Access-Control-Allow-Origin', '*')
+                        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+                        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    }
+    return $response
+                    ->withHeader('Access-Control-Allow-Origin', '*')
+                    ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+                    ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+});
+
+// API version 1
+require './login.php';
+require './V1.php';
+require './Emprendedor.php';
+require './Catalogo.php';
+require './Perfil.php';
+require './Agenda.php';
+require './Persona.php';
+require './Programa.php';
+require './Rubrica.php';
+require './Evaluacion.php';
+require './Emprendimiento.php';
+require './Dashboard.php';
+
+require './mantenimiento/index.php';
+
+$app->run();
+?>

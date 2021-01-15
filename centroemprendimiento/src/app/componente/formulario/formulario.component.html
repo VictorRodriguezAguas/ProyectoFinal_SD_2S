@@ -1,0 +1,93 @@
+<form class="form-1 needs-validation" id="form-1" novalidate *ngIf="formulario">
+  <div class='row' *ngIf="(clasColum != 'col-sm-12' && clasColum != 'col-md-12') ">
+    <div class='{{clasColum}}' *ngFor="let campo of formulario.campos">
+      <div class="form-group mb-3">
+        <label class="form-control-label">
+          <span class="obligatorioLable" *ngIf="campo.obligatorio == 'SI'">*</span>
+          {{campo.pregunta}}
+        </label>
+        <input [(ngModel)]="campo.valorAux" *ngIf="campo.tipo != 'L' && campo.tipo != 'LT'"
+          [ngClass]="{'is-invalid': (campo.submit || formulario.submit) && !campo.valido}" 
+          [disabled]="!editable"
+          [ngModelOptions]="{standalone: true}" [type]="getType(campo.tipo)" class="form-control" (blur)="grabarCampo(campo)">
+
+        <select class="form-control" *ngIf="(campo.tipo == 'L' || campo.tipo=='LT') && campo.tipo_seleccion == 'UNICO'"
+          [ngClass]="{'is-invalid': (campo.submit || formulario.submit) && !campo.valido}" 
+          [disabled]="!editable"
+          [(ngModel)]="campo.valorAux" [ngModelOptions]="{standalone: true}" (change)="grabarCampo(campo)">
+          <option value="">Seleccione</option>
+          <option *ngFor="let item of campo.lista" [value]="item.id" [innerText]="item.nombre"></option>
+        </select>
+
+        <div *ngIf="campo.tipo_seleccion == 'MULTIPLE'">
+          <label class="custom-control custom-radio" *ngFor="let item of campo.lista">
+            <input type="checkbox" class="custom-control-input" [(ngModel)]="item.selected"
+              [ngModelOptions]="{standalone: true}" [attr.id]="campo.nombre + '_' + item.id"
+              [disabled]="!editable"
+              [attr.name]="campo.nombre + '_' + item.id" (change)="selectMultiple(campo, item)">
+            <span class="custom-control-label" [attr.for]="campo.nombre + '_' + item.id"
+              [innerText]="item.nombre"></span>
+          </label>
+        </div>
+
+        <input [(ngModel)]="campo.otro_valor" [ngModelOptions]="{standalone: true}" type="text" class="form-control"
+          placeholder="Ingrese campo"
+          (blur)="grabarCampo(campo)"
+          [disabled]="!editable"
+          [ngClass]="{'is-invalid': (campo.submit || formulario.submit) && !campo.valido}" 
+          *ngIf="campo.id_campo_otro && campo.id_campo_otro == campo.valorAux && (campo.tipo == 'L' || campo.tipo=='LT')">
+        <label id="validation-nombre-error" *ngIf="(campo.submit || formulario.submit) && !campo.valido"
+          class="error jquery-validation-error small form-text invalid-feedback">Este campo es
+          obligatorio</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="(clasColum == 'col-sm-12' || clasColum == 'col-md-12') ">
+    <div class="{{clasColum}}">
+      <app-card [options]="false" [hidHeader]="true" *ngFor="let campo of formulario.campos" [cardClass]="((campo.submit || formulario.submit) && !campo.valido)?'panel-invalid':''">
+        <div class="form-group mb-3">
+          <label class="form-control-label">
+            <span class="obligatorioLable" *ngIf="campo.obligatorio == 'SI'">*</span>
+            {{campo.pregunta}}
+          </label>
+          <input [(ngModel)]="campo.valorAux" *ngIf="campo.tipo != 'L' && campo.tipo != 'LT'"
+            [ngClass]="{'is-invalid': (campo.submit || formulario.submit) && !campo.valido}" 
+            [disabled]="!editable"
+            (blur)="grabarCampo(campo)"
+            [ngModelOptions]="{standalone: true}" [type]="getType(campo.tipo)" class="form-control">
+
+          <select class="form-control"
+            *ngIf="(campo.tipo == 'L' || campo.tipo=='LT') && campo.tipo_seleccion == 'UNICO'" [(ngModel)]="campo.valorAux"
+            [disabled]="!editable"
+            [ngClass]="{'is-invalid': (campo.submit || formulario.submit) && !campo.valido}" 
+            [ngModelOptions]="{standalone: true}" (change)="grabarCampo(campo)">
+            <option value="">Seleccione</option>
+            <option *ngFor="let item of campo.lista" [value]="item.id" [innerText]="item.nombre"></option>
+          </select>
+
+          <div *ngIf="campo.tipo_seleccion == 'MULTIPLE'" [ngClass]="{'is-invalid': (campo.submit || formulario.submit) && !campo.valido}">
+            <label class="custom-control custom-radio" *ngFor="let item of campo.lista">
+              <input type="checkbox" class="custom-control-input" [(ngModel)]="item.selected"
+                [ngModelOptions]="{standalone: true}" [attr.id]="campo.nombre + '_' + item.id"
+                [disabled]="!editable"
+                [attr.name]="campo.nombre + '_' + item.id" (change)="selectMultiple(campo, item)">
+              <span class="custom-control-label" [attr.for]="campo.nombre + '_' + item.id"
+                [innerText]="item.nombre"></span>
+            </label>
+          </div>
+
+          <input [(ngModel)]="campo.otro_valor" [ngModelOptions]="{standalone: true}" type="text" class="form-control"
+            placeholder="Ingrese campo" (blur)="grabarCampo(campo)"
+            [ngClass]="{'is-invalid': (campo.submit || formulario.submit) && !campo.valido}" 
+            [disabled]="!editable"
+            *ngIf="campo.id_campo_otro && campo.id_campo_otro == campo.valorAux && (campo.tipo == 'L' || campo.tipo=='LT')">
+            
+          <label id="validation-nombre-error" *ngIf="(campo.submit || formulario.submit) && !campo.valido"
+            class="error jquery-validation-error small form-text invalid-feedback">Este campo es
+            obligatorio</label>
+        </div>
+      </app-card>
+    </div>
+  </div>
+</form>
